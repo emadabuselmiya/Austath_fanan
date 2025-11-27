@@ -1,0 +1,38 @@
+.report {
+  width: 420px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.bg-white-50 {
+  color: #111;
+  font-weight: 500 !important;
+  font-family: monospace;
+}
+
+table .bg-white-50 {
+  font-weight: 800 !important;
+}
+
+.color-bold {
+  font-weight: 700;
+} 
+
+.color-medium {
+  color: rgb(75, 75, 75);
+  font-weight: 600;
+}
+
+.border-dash {
+  border-bottom: 2px dashed #111;
+}
+
+
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
