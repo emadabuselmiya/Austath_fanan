@@ -33,7 +33,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-       
+
     ];
 
     /**
@@ -44,6 +44,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function class(){
+        return $this->belongsTo(StudentClass::class, 'class_id');
+    }
 
     public function activeCourses(){
         return $this->hasMany(StudentCourseActivation::class, "student_id");

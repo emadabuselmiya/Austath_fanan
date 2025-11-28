@@ -8,9 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class ActivationCode extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         "code",
         "is_used",
         "user_id"
-    ] ;
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

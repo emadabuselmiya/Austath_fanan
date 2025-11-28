@@ -46,11 +46,63 @@
                 </div>
             </div>
 
+            <div class="col-lg-2 col-6">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="badge rounded p-2 bg-label-info mb-2">
+                                       <span class="iconify me-1" data-icon="noto-v1:man-student"
+                                             data-width="25"
+                                             data-height="25"></span>
+                        </div>
+                        <h5 class="card-title mb-1">{{ \App\Models\User::count() }}</h5>
+                        <p class="mb-0">عدد الطلاب</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-6">
 
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="badge rounded p-2 bg-label-info mb-2">
+                               <span class="iconify me-1" data-icon="streamline-freehand:coupon-percent"
+                                     data-width="25"
+                                     data-height="25"></span>
+                        </div>
+                        <h5 class="card-title mb-1">{{ \App\Models\ActivationCode::count() }}</h5>
+                        <p class="mb-0">عدد اكواد التفعيل</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-6">
 
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="badge rounded p-2 bg-label-success mb-2">
+                                       <span class="iconify me-1" data-icon="streamline-freehand:coupon-percent"
+                                             data-width="25"
+                                             data-height="25"></span>
+                        </div>
+                        <h5 class="card-title mb-1">{{ \App\Models\ActivationCode::where('is_used', 1)->count() }}</h5>
+                        <p class="mb-0">الاكواد المستخدمة</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-6">
+
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="badge rounded p-2 bg-label-danger mb-2">
+                                       <span class="iconify me-1" data-icon="streamline-freehand:coupon-percent"
+                                             data-width="25"
+                                             data-height="25"></span>
+                        </div>
+                        <h5 class="card-title mb-1">{{ \App\Models\ActivationCode::where('is_used', 0)->count() }}</h5>
+                        <p class="mb-0">الاكواد الغير مستخدمة</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
 
 @endsection
 
@@ -60,6 +112,5 @@
     <script src="{{ asset('assets/js/dashboards-crm.js') }}"></script>
     <script src="{{ asset('assets/js/dashboards-analytics.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
-
 
 @stop

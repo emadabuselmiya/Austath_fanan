@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\BusinessSettingController;
-use App\Http\Controllers\Admin\CustomersController;
+use App\Http\Controllers\Admin\CodesController;
+use App\Http\Controllers\Admin\StudentsController;
 use App\Http\Controllers\Admin\RawMaterialController;
 use App\Http\Controllers\Admin\RoomsController;
 use App\Http\Controllers\Admin\HomeController;
@@ -37,6 +38,17 @@ Route::middleware(['admin.auth:admin'])->group(function () {
         Route::post('/update/{id}', [UserController::class, 'update'])->name('update');
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
         Route::get('status/{id}', [UserController::class, 'status'])->name('status');
+    });
+
+    Route::prefix('students')->as('students.')->group(function () {
+        Route::get('/', [StudentsController::class, 'index'])->name('index');
+        Route::get('/{id}', [StudentsController::class, 'show'])->name('show');
+    });
+
+    Route::prefix('codes')->as('codes.')->group(function () {
+        Route::get('/', [CodesController::class, 'index'])->name('index');
+        Route::delete('/{id}', [CodesController::class, 'destroy'])->name('destroy');
+
     });
 
     Route::prefix('business-setting')->as('business-setting.')->group(function () {

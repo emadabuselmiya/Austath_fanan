@@ -19,7 +19,7 @@ $(function () {
   }
 
   // Variable declaration for table
-  var dt_customer_table = $('.datatables-customers'),
+  var dt_customer_table = $('.datatables-students'),
     select2 = $('.select2'),
     customerView = 'app-ecommerce-customer-details-overview.html';
   if (select2.length) {
@@ -30,7 +30,7 @@ $(function () {
     });
   }
 
-  // customers datatable
+  // students datatable
   if (dt_customer_table.length) {
     var dt_customer = dt_customer_table.DataTable({
       ajax: assetsPath + 'json/ecommerce-customer-all.json', // JSON file to add data
@@ -378,7 +378,7 @@ $(function () {
   }
 
   // Delete Record
-  $('.datatables-customers tbody').on('click', '.delete-record', function () {
+  $('.datatables-students tbody').on('click', '.delete-record', function () {
     dt_customer.row($(this).parents('tr')).remove().draw();
   });
 

@@ -10,7 +10,7 @@
             </li>
 
             <!-- users -->
-            <li class="menu-item  @if(\Request::routeIs('admin.users.*') || \Request::routeIs('admin.roles.*') || \Request::routeIs('admin.pharmacies.*')) active @endif">
+            <li class="menu-item  @if(\Request::routeIs('admin.users.*') || \Request::routeIs('admin.roles.*')) active @endif">
                 <a href="javascript:void(0)" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons ti ti-users"></i>
                     <div data-i18n="{{ translate('Users') }}">{{ translate('Users') }}</div>
@@ -26,6 +26,20 @@
                     </li>
 
                 </ul>
+            </li>
+
+            <li class="menu-item @if(\Request::routeIs('admin.students.*')) active @endif">
+                <a href="{{ route('admin.students.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-school"></i>
+                    <div data-i18n="{{ translate('الطلاب') }}">{{ translate('الطلاب') }}</div>
+                </a>
+            </li>
+
+            <li class="menu-item @if(\Request::routeIs('admin.codes.*')) active @endif">
+                <a href="{{ route('admin.codes.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-auth-2fa"></i>
+                    <div data-i18n="{{ translate('اكواد التفعيل') }}">{{ translate('اكواد التفعيل') }}</div>
+                </a>
             </li>
 
             <!-- settings -->

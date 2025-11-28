@@ -55,6 +55,6 @@ class CreateAdminsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('admins');
-        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('password_admin_reset_tokens');
     }
 }

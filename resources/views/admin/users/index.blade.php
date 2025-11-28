@@ -31,7 +31,6 @@
                             <th>{{translate('Full name')}}</th>
                             <th>{{translate("E-mail")}}</th>
                             <th>{{translate("Phone")}}</th>
-                            <th>{{translate("Role")}}</th>
                             <th>{{translate("Status")}}</th>
                             <th>{{translate("Actions")}}</th>
                         </tr>
@@ -87,24 +86,6 @@
                                     <input type="text" name="job_title" id="job_title" class="form-control"
                                            value="{{ old('job_title') }}"
                                            placeholder="{{ translate('Job Title') }}">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="role_id">{{ translate('Role') }}</label>
-                                    <select name="role_id" id="role_id" class="select2 form-control"
-                                            title="Select Role">
-                                        @if(auth('admin')->user()->role_id == 0)
-                                            <option value="0">Super Admin</option>
-                                        @endif
-                                        @php($roles = \App\Models\Role::get())
-                                        @foreach($roles as $role)
-                                            <option value="{{$role->id}}">{{$role->name}}</option>
-
-                                        @endforeach
-                                    </select>
-
                                 </div>
                             </div>
 
@@ -182,7 +163,6 @@
                     {data: 'name'},
                     {data: 'email'},
                     {data: 'phone'},
-                    {data: 'role'},
                     {data: 'status'},
                     {data: 'actions', sortable: false},
                 ],
@@ -237,7 +217,6 @@
                             },
                         ]
                     },
-                        @if(auth()->guard('admin')->user()->can('create', \App\Models\Admin::class))
 
                     {
                         text: '<i class="tf-icons ti ti-circle-plus"></i>',
@@ -250,7 +229,6 @@
                             $(node).removeClass('btn-secondary');
                         }
                     }
-                @endif
 
                 ],
             });
