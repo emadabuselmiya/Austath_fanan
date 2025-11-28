@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\CentralLogics\Helpers;
+use App\Exports\DMAccountsExport;
 use App\Http\Controllers\Controller;
 use App\Models\ActivationCode;
 use App\Models\Admin;
+use App\Models\DeliveryMan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class CodesController extends Controller
 {
@@ -102,6 +107,23 @@ class CodesController extends Controller
         $admin->delete();
 
         return redirect()->back()->with('success', 'تم حذف الكود بنجاح');
+    }
+
+    public function codes_export(Request $request)
+    {
+        $data = ActivationCode::where('wallet', '>=', $request->amount)->get();
+
+        foreach ($data as $key => $item) {
+
+            $data[] = [
+                '#' => $key + 1,
+                'الكود' => $item->code,
+            ];
+        }
+
+
+        // Export data to Excel file
+        return (new FastExcel($data))->download('Codes_' . now()->toDateString() . '.xlsx');
     }
 
 }

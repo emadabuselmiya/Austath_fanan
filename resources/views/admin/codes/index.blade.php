@@ -149,22 +149,12 @@
                         text: '<i class="ti ti-screen-share me-1 ti-xs"></i>{{translate('Export')}}',
                         buttons: [
                             {
-                                extend: 'print',
-                                text: '<i class="ti ti-printer me-1" ></i>{{translate('Print')}}',
-                                className: 'dropdown-item',
-                                exportOptions: {columns: [0, 1, 2, 3]}
-                            },
-                            {
-                                extend: 'csv',
-                                text: '<i class="ti ti-file-text me-1" ></i>Csv',
-                                className: 'dropdown-item',
-                                exportOptions: {columns: [0, 1, 2, 3]}
-                            },
-                            {
-                                extend: 'excel',
                                 text: '<i class="ti ti-file-text me-1" ></i>{{translate('Excel')}}',
                                 className: 'dropdown-item',
-                                exportOptions: {columns: [0, 1, 2, 3]}
+                                attr: {
+                                    "type": "button",
+                                    "onclick": "window.location='{{route('admin.codes.codes_export')}}'"
+                                },
                             },
                         ]
                     },

@@ -47,6 +47,7 @@ Route::middleware(['admin.auth:admin'])->group(function () {
 
     Route::prefix('codes')->as('codes.')->group(function () {
         Route::get('/', [CodesController::class, 'index'])->name('index');
+        Route::get('/codes_export', [CodesController::class, 'codes_export'])->name('codes_export');
         Route::delete('/{id}', [CodesController::class, 'destroy'])->name('destroy');
 
     });
