@@ -52,6 +52,7 @@ Route::post('/delete-account-hfg', [AuthController::class, 'deleteUser']);
 
 Route::middleware('api.token')->group(function () {
     Route::post('/courses', [CourseController::class, 'store']);
+    Route::post('/update_fcm_token', [CourseController::class, 'update_fcm_token']);
 
     Route::post('/subjects', [SubjectController::class, 'store']);
     Route::delete('/subject/{subject_id}', [SubjectController::class, 'delete']);

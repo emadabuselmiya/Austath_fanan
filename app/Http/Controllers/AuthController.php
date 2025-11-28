@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\CentralLogics\Helpers;
 use App\Mail\EmailConfirmation;
 use App\Mail\ResetPasswordMail;
 use App\Models\Course;
 use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -212,4 +214,14 @@ class AuthController extends Controller
         }
 
     }
+
+    public function update_fcm_token(Request $request)
+    {
+        User::where('id', auth()->user()->id)->update([
+            'fcm_token' => $request['fcm_token']
+        ]);
+
+        return response()->json(['status' => true, 'message' => 'successfully updated!'], 200);
+    }
+
 }
