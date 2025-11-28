@@ -103,6 +103,10 @@
             dtTickerTable.DataTable({
                 "processing": true,
                 "serverSide": true,
+                "lengthMenu": [
+                    [10, 25, 50, 100, 1000000],
+                    [10, 25, 50, 100, "All"]
+                ],
                 ajax: {
                     url: '{{ route('admin.codes.index') }}'
                 }, // JSON file to add data
@@ -178,6 +182,10 @@
             dtTickerTable.DataTable({
                 "processing": true,
                 "serverSide": true,
+                "lengthMenu": [
+                    [10, 25, 50, 100, 1000000],
+                    [10, 25, 50, 100, "All"]
+                ],
                 ajax: {
                     url: '{{ route('admin.codes.index') }}',
                     data: {
