@@ -111,15 +111,14 @@ class CodesController extends Controller
 
     public function codes_export(Request $request)
     {
-        $data = ActivationCode::where('wallet', '>=', $request->amount)->get();
+        $data = ActivationCode::where('is_used', 0)->select('id', 'code')->get()->toArray();
 
-        foreach ($data as $key => $item) {
-
-            $data[] = [
-                '#' => $key + 1,
-                'الكود' => $item->code,
-            ];
-        }
+//        foreach ($data as $key => $item) {
+//            $data[] = [
+//                '#' => $key + 1,
+//                'الكود' => $item->code,
+//            ];
+//        }
 
 
         // Export data to Excel file
