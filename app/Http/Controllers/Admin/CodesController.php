@@ -2,15 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\CentralLogics\Helpers;
-use App\Exports\DMAccountsExport;
 use App\Http\Controllers\Controller;
 use App\Models\ActivationCode;
-use App\Models\Admin;
-use App\Models\DeliveryMan;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 class CodesController extends Controller
@@ -111,17 +105,19 @@ class CodesController extends Controller
 
     public function codes_export(Request $request)
     {
-        $data = ActivationCode::where('is_used', 0)->select('id', 'code')->get()->toArray();
+        ini_set('max_execution_time', '3600'); // 1 hour
+        ini_set('memory_limit', '-1');
 
-//        foreach ($data as $key => $item) {
-//            $data[] = [
-//                '#' => $key + 1,
-//                'الكود' => $item->code,
-//            ];
-//        }
+        $data = ActivationCode::where('is_used', 0)
+            ->select('code')
+            ->get()
+            ->map(function ($item, $key) {
+                return [
+                    '#' => $key + 1,
+                    'الكود' => $item->code,
+                ];
+            });
 
-
-        // Export data to Excel file
         return (new FastExcel($data))->download('Codes_' . now()->toDateString() . '.xlsx');
     }
 
