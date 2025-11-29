@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\CentralLogics\Helpers;
 use App\Mail\EmailConfirmation;
 use App\Mail\ResetPasswordMail;
 use App\Models\Course;
 use App\Models\User;
-use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

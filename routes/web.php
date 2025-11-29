@@ -2,9 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\subjectController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ActivationCodeController;
 use App\Http\Controllers\TeacherController;
@@ -14,7 +13,6 @@ use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\GeneralDataController;
-use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 /*
@@ -114,9 +112,9 @@ Route::post('/logout', function (Request $request) {
     return response()->json(['message' => 'Logged out successfully'], 200);
 });
 
-Route::post("/video/portal/admin", [Controller::class, "loginPortal"])->name("login")->middleware('web');
-Route::get("/video/portal/admin/form", [Controller::class, "loadLoginPortal"])->name("load.login");
-Route::get("/admin/video/protal", [Controller::class, "loadPortal"]);
+Route::post("/video/portal/admin", [AuthController::class, "loginPortal"])->name("login")->middleware('web');
+Route::get("/video/portal/admin/form", [AuthController::class, "loadLoginPortal"])->name("load.login");
+Route::get("/admin/video/protal", [AuthController::class, "loadPortal"]);
 
 // In routes/web.php
 Route::get('/download/video/{lesson}', function($lessonId) {
