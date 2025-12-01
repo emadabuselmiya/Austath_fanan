@@ -18,12 +18,30 @@ class Course extends Model
         'order'
     ];
 
-    public function subjects(){
+    public function getImgUrlAttribute($value): string|\Illuminate\Contracts\Routing\UrlGenerator|null
+    {
+        if ($this->img != null)
+            return url('/storage/' . $this->img);
+        else
+            return url('assets/logo.png');
+    }
+
+    public function getDemoUrlAttribute($value): string|\Illuminate\Contracts\Routing\UrlGenerator|null
+    {
+        if ($this->demo != null)
+            return url('/storage/' . $this->demo);
+        else
+            return null;
+    }
+
+    public function subjects(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(Subject::class);
     }
 
 
-    public function studentClass(){
+    public function studentClass(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(StudentClass::class);
     }
 }

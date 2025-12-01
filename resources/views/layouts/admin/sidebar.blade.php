@@ -42,6 +42,27 @@
                 </a>
             </li>
 
+            <li class="menu-item @if(\Request::routeIs('admin.classes.*')) active @endif">
+                <a href="{{ route('admin.classes.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-auth-2fa"></i>
+                    <div data-i18n="{{ translate('الفصول') }}">{{ translate('الفصول') }}</div>
+                </a>
+            </li>
+
+            <li class="menu-item @if(\Request::routeIs('admin.courses.*')) active @endif">
+                <a href="{{ route('admin.courses.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-auth-2fa"></i>
+                    <div data-i18n="{{ translate('المواد') }}">{{ translate('المواد') }}</div>
+                </a>
+            </li>
+
+            <li class="menu-item @if(\Request::routeIs('admin.lessons.*')) active @endif">
+                <a href="{{ route('admin.lessons.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-auth-2fa"></i>
+                    <div data-i18n="{{ translate('الدروس') }}">{{ translate('الدروس') }}</div>
+                </a>
+            </li>
+
 {{--            <!-- settings -->--}}
 {{--            <li class="menu-item @if(\Request::routeIs('admin.business-setting.views')) active @endif">--}}
 {{--                <a href="{{ route('admin.business-setting.views') }}" class="menu-link">--}}

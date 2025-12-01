@@ -1,16 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\BusinessSettingController;
+use App\Http\Controllers\Admin\ClassesController;
 use App\Http\Controllers\Admin\CodesController;
+use App\Http\Controllers\Admin\CoursesController;
+use App\Http\Controllers\Admin\LessonsController;
 use App\Http\Controllers\Admin\StudentsController;
-use App\Http\Controllers\Admin\RawMaterialController;
-use App\Http\Controllers\Admin\RoomsController;
 use App\Http\Controllers\Admin\HomeController;
-use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\StocksController;
-use App\Http\Controllers\Admin\TrafficsController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,7 +46,30 @@ Route::middleware(['admin.auth:admin'])->group(function () {
         Route::get('/', [CodesController::class, 'index'])->name('index');
         Route::get('/codes_export', [CodesController::class, 'codes_export'])->name('codes_export');
         Route::delete('/{id}', [CodesController::class, 'destroy'])->name('destroy');
+    });
 
+    Route::prefix('classes')->as('classes.')->controller(ClassesController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/create', 'store')->name('store');
+        Route::get('/{id}', 'show')->name('show');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
+    Route::prefix('courses')->as('courses.')->controller(CoursesController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/create', 'store')->name('store');
+        Route::get('/{id}', 'show')->name('show');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
+    Route::prefix('lessons')->as('lessons.')->controller(LessonsController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/create', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::post('/{id}/edit', 'update')->name('update');
+        Route::get('/{id}', 'show')->name('show');
+        Route::delete('/{id}', 'destroy')->name('destroy');
     });
 
     Route::prefix('business-setting')->as('business-setting.')->group(function () {
