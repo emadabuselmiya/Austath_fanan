@@ -15,9 +15,9 @@ class CoursesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $classes = Course::withCount(['subjects'])->get();
+            $courses = Course::withCount(['subjects'])->get();
 
-            return datatables()->of($classes)
+            return datatables()->of($courses)
                 ->editColumn('image', function (Course $course) {
                     return '<img src="' . $course->img_url . '" alt="' . $course->name . '" height="50" width="50">';
                 })
@@ -46,7 +46,7 @@ class CoursesController extends Controller
             'name' => ['required', 'string', 'max:255', 'min:3'],
             'class_id' => ['required', 'exists:students_classes,id'],
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'video' => 'nullable|file|mimes:mp4,mkv,avi,mov|max:524288',
+            'video' => ['nullable', 'file', 'mimes:mp4,mov,avi,webm,flv,mkv', 'max:524288'],
         ]);
 
         if ($validator->fails()) {

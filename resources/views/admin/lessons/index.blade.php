@@ -29,12 +29,12 @@
                     <tr>
                         <th>#</th>
                         <th>{{translate('الاسم')}}</th>
-                        <th>{{translate("عدد المواد")}}</th>
+                        <th>{{translate('الوصف')}}</th>
+                        <th>{{translate("الموضوع")}}</th>
+                        <th>{{translate("تاريخ الانشاء")}}</th>
                         <th>{{translate("العمليات")}}</th>
                     </tr>
                     </thead>
-                    <tbody id="sortable">
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -43,38 +43,11 @@
     </div>
     <!-- / Content -->
 
-    <div id="FormModal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="POST" id="classForm" action="javascript:void(0);" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="class_id" id="class_id" value="-1">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>{{ translate('الاسم') }}<span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" placeholder="{{ translate('الاسم') }}">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" type="reset" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">{{ translate('اغلاق') }} </button>
-                        <button type="submit" class="btn btn-success mr-1 data-submit">{{ translate('حفظ') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
     <div id="deleteModal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ translate('حذف') }} {{ translate('الفصل') }}</h5>
+                    <h5 class="modal-title">{{ translate('حذف') }} {{ translate('الدرس') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST" enctype="multipart/form-data">
@@ -106,16 +79,18 @@
                 "processing": true,
                 "serverSide": true,
                 ajax: {
-                    url: '{{ route('admin.classes.index') }}'
+                    url: '{{ route('admin.lessons.index', ['subject'=>\Request::get('subject')]) }}'
                 }, // JSON file to add data
                 columns: [
-                    {data: 'DT_RowIndex'},
+                    {data: 'id'},
                     {data: 'name'},
-                    {data: 'courses_count'},
+                    {data: 'description'},
+                    {data: 'subject_id'},
+                    {data: 'created_at'},
                     {data: 'actions', sortable: false},
                 ],
                 order: [
-                    [0, 'asc']
+                    [4, 'DESC']
                 ],
                 dom: '<"d-flex justify-content-between align-items-center header-actions mx-1 row mt-75"' +
                     '<"col-lg-12 col-xl-6" l>' +
@@ -145,7 +120,7 @@
                         className: 'btn btn-secondary btn-sm btn-primary mx-1',
                         attr: {
                             "type": "button",
-                            "onclick": "createForm()"
+                            "onclick": "window.location='{{ route('admin.lessons.create') }}'"
                         },
                         init: function (api, node, config) {
                             $(node).removeClass('btn-secondary');
@@ -157,77 +132,11 @@
     </script>
 
     <script>
-
-        function editForm(id, name) {
-            var modal = $('#FormModal');
-
-            modal.find('.modal-title').text("{{translate('تعديل الفصل')}}");
-            modal.find('[name=class_id]').val(id);
-            modal.find('[name=name]').val(name);
-            modal.modal('show');
-        }
-
-        function createForm() {
-            var modal = $('#FormModal');
-
-            modal.find('.modal-title').text("{{translate('اضافة الفصل')}}");
-            $('#classForm')[0].reset();
-            $('#class_id').val(-1);
-            modal.modal('show');
-        }
-
         function deleteForm(id) {
             var modal = $('#deleteModal');
-            var action = `{{ route('admin.classes.destroy', '') }}/${id}`;
+            var action = `{{ route('admin.lessons.destroy', '') }}/${id}`;
             modal.find('form').attr('action', action);
             modal.modal('show');
         }
-    </script>
-
-    <script>
-        $('#classForm').on('submit', function (e) {
-            $(":submit").prop('disabled', true)
-
-            e.preventDefault();
-            var formData = new FormData(this);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.post({
-                url: '{{route('admin.classes.store')}}',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function () {
-                    $('#loading').show();
-                },
-                success: function (data) {
-                    $(":submit").prop('disabled', false)
-
-                    $('#loading').hide();
-                    if (data.errors) {
-                        for (var i = 0; i < data.errors.length; i++) {
-                            toastr.error(data.errors[i].message, {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
-                        }
-                    } else {
-                        toastr.success('{{ translate('تم اضافة الفصل بنجاح') }}', {
-                            CloseButton: true,
-                            ProgressBar: true
-                        });
-                        $('#classForm')[0].reset();
-                        $('#FormModal').modal('hide');
-                        dtTickerTable.DataTable().ajax.reload();
-                    }
-                }, error: function () {
-                    $(":submit").prop('disabled', false)
-                }
-            });
-        });
     </script>
 @stop

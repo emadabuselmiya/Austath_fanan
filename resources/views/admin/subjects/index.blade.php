@@ -1,7 +1,7 @@
 @extends('layouts.admin.app')
 
 @section('title')
-    {{ translate('المواد') }}
+    {{ translate('المواضيع') }}
 @stop
 
 @section('css')
@@ -19,7 +19,7 @@
 
     <!-- Content -->
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4">{{ translate('المواد') }}</h4>
+        <h4 class="fw-bold py-3 mb-4">{{ translate('المواضيع') }}</h4>
 
         <!-- Ajax Sourced Server-side -->
         <div class="card">
@@ -28,10 +28,10 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{translate('الصورة')}}</th>
                         <th>{{translate('الاسم')}}</th>
-                        <th>{{translate('النوع')}}</th>
-                        <th>{{translate("عدد المواضيع")}}</th>
+                        <th>{{translate('الوضع')}}</th>
+                        <th>{{translate('المادة')}}</th>
+                        <th>{{translate("عدد المحاضرات")}}</th>
                         <th>{{translate("العمليات")}}</th>
                     </tr>
                     </thead>
@@ -50,13 +50,18 @@
                     <h5 class="modal-title"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" id="courseForm" action="javascript:void(0);" enctype="multipart/form-data">
+                <form method="POST" id="subjectForm" action="javascript:void(0);" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="course_id" id="course_id" value="-1">
+                    <input type="hidden" name="subject_id" id="subject_id" value="-1">
                     <div class="modal-body">
                         <div class="form-group">
                             <label>{{ translate('الاسم') }}<span class="text-danger">*</span></label>
                             <input type="text" name="name" class="form-control" placeholder="{{ translate('الاسم') }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>{{ translate('الوصف') }}<span class="text-danger">*</span></label>
+                            <input type="text" name="des" class="form-control" placeholder="{{ translate('الوصف') }}">
                         </div>
 
                         <div class="form-group">
@@ -69,29 +74,6 @@
                                 @endforeach
                             </select>
 
-                        </div>
-                        <div class="form-group">
-                            <label>{{ translate('الفيديو') }}</label>
-                            <input type="file" name="video" id="video" class="form-control"
-                                   accept=".mp4, .mov, .avi, .webm, .flv, .mkv, video/*">
-                        </div>
-
-                        <div class="form-group mt-2" id="dropZone">
-                            <label for="username">{{ translate('الصورة') }}</label>
-                            <input type="file"
-                                   name="image" id="image" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
-                                   style="display:none;"/>
-                            <button id="output_image" type="button"
-                                    onclick="document.getElementById('image').click();"
-                                    style=" width: 100px;
-                                            height: 100px;
-                                            border-radius: 10%;
-                                            background-color: #0a1128;
-                                            background-image: url({{ asset('storage/default.png') }});
-                                            background-repeat: no-repeat;
-                                            background-size: cover;
-                                            background-position: center;
-                                            "/>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -108,7 +90,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ translate('حذف') }} {{ translate('المادة') }}</h5>
+                    <h5 class="modal-title">{{ translate('حذف') }} {{ translate('الموضوع') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST" enctype="multipart/form-data">
@@ -140,14 +122,14 @@
                 "processing": true,
                 "serverSide": true,
                 ajax: {
-                    url: '{{ route('admin.courses.index') }}'
+                    url: '{{ route('admin.subjects.index') }}'
                 }, // JSON file to add data
                 columns: [
                     {data: 'DT_RowIndex'},
-                    {data: 'image'},
                     {data: 'name'},
-                    {data: 'type'},
-                    {data: 'subjects_count'},
+                    {data: 'description'},
+                    {data: 'course'},
+                    {data: 'lessons_count'},
                     {data: 'actions', sortable: false},
                 ],
                 order: [
@@ -194,14 +176,14 @@
 
     <script>
 
-        function editForm(id, name, class_id, image) {
+        function editForm(id, name, description, course_id) {
             var modal = $('#FormModal');
 
-            modal.find('.modal-title').text("{{translate('تعديل المادة')}}");
-            modal.find('[name=course_id]').val(id);
+            modal.find('.modal-title').text("{{translate('تعديل الموضوع')}}");
+            modal.find('[name=subject_id]').val(id);
             modal.find('[name=name]').val(name);
-            modal.find('[name=class_id]').val(class_id).trigger('change');
-            modal.find('[id=output_image]').css("background-image", "url(" + image + ")");
+            modal.find('[name=description]').val(description);
+            modal.find('[name=course_id]').val(course_id).trigger('change');
 
             modal.modal('show');
         }
@@ -209,10 +191,10 @@
         function createForm() {
             var modal = $('#FormModal');
 
-            modal.find('.modal-title').text("{{translate('اضافة المادة')}}");
-            $('#courseForm')[0].reset();
-            $('#class_id').val(null).trigger('change');
-            $('#course_id').val(-1);
+            modal.find('.modal-title').text("{{translate('اضافة الموضوع')}}");
+            $('#subjectForm')[0].reset();
+            $('#course_id').val(null).trigger('change');
+            $('#subject_id').val(-1);
             modal.modal('show');
         }
 
@@ -225,7 +207,7 @@
     </script>
 
     <script>
-        $('#courseForm').on('submit', function (e) {
+        $('#subjectForm').on('submit', function (e) {
             $(":submit").prop('disabled', true)
 
             e.preventDefault();
@@ -236,7 +218,7 @@
                 }
             });
             $.post({
-                url: '{{route('admin.courses.store')}}',
+                url: '{{route('admin.subjects.store')}}',
                 data: formData,
                 cache: false,
                 contentType: false,
@@ -256,11 +238,11 @@
                             });
                         }
                     } else {
-                        toastr.success('{{ translate('تم اضافة المادة بنجاح') }}', {
+                        toastr.success('{{ translate('تم اضافة الموضوع بنجاح') }}', {
                             CloseButton: true,
                             ProgressBar: true
                         });
-                        $('#courseForm')[0].reset();
+                        $('#subjectForm')[0].reset();
                         $('#FormModal').modal('hide');
                         dtTickerTable.DataTable().ajax.reload();
                     }

@@ -56,6 +56,13 @@
                 </a>
             </li>
 
+            <li class="menu-item @if(\Request::routeIs('admin.subjects.*')) active @endif">
+                <a href="{{ route('admin.subjects.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-auth-2fa"></i>
+                    <div data-i18n="{{ translate('المواضيع') }}">{{ translate('المواضيع') }}</div>
+                </a>
+            </li>
+
             <li class="menu-item @if(\Request::routeIs('admin.lessons.*')) active @endif">
                 <a href="{{ route('admin.lessons.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-auth-2fa"></i>

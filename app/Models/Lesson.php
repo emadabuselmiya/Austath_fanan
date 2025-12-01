@@ -18,7 +18,24 @@ class Lesson extends Model
         "order"
     ] ;
 
-    public function subject(){
+    public function getImgUrlAttribute($value): string|\Illuminate\Contracts\Routing\UrlGenerator|null
+    {
+        if ($this->img != null)
+            return url('/storage/' . $this->img);
+        else
+            return url('assets/logo.png');
+    }
+
+    public function getVideoUrlAttribute($value): string|\Illuminate\Contracts\Routing\UrlGenerator|null
+    {
+        if ($this->video != null)
+            return url('/storage/' . $this->video);
+        else
+            return null;
+    }
+
+    public function subject(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(Subject::class);
     }
 }

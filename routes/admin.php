@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\LessonsController;
 use App\Http\Controllers\Admin\StudentsController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,10 +63,19 @@ Route::middleware(['admin.auth:admin'])->group(function () {
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
 
+    Route::prefix('subjects')->as('subjects.')->controller(SubjectController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/create', 'store')->name('store');
+        Route::get('/{id}', 'show')->name('show');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
     Route::prefix('lessons')->as('lessons.')->controller(LessonsController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('/create', 'store')->name('store');
+        Route::get('/{id}/copy', 'copy')->name('copy');
+        Route::post('/{id}/copy', 'store_copy')->name('store_copy');
         Route::get('/{id}/edit', 'edit')->name('edit');
         Route::post('/{id}/edit', 'update')->name('update');
         Route::get('/{id}', 'show')->name('show');
