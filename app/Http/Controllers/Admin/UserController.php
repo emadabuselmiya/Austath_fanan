@@ -60,11 +60,11 @@ class UserController extends Controller
                 $delete = '';
                 $edit = '';
 
-                    if (auth('admin')->id() != $record->id) {
-                        $delete = '<a class="text-danger" onclick="deleteForm(' . $record->id . ')"><span class="iconify" data-icon="fluent:delete-20-filled" data-width="25" data-height="25"></span></a>';
-                    }
+                if (auth('admin')->id() != $record->id) {
+                    $delete = '<a class="text-danger" onclick="deleteForm(' . $record->id . ')"><span class="iconify" data-icon="fluent:delete-20-filled" data-width="25" data-height="25"></span></a>';
+                }
 
-                    $edit = ' <a href = "javascript:void(0);" id="editForm"
+                $edit = ' <a href = "javascript:void(0);" id="editForm"
                             onclick="editForm(' . $record->id . ',\'' . $record->name . '\',\'' . $record->email . '\', \'' . $record->phone . '\', \'' . $record->job_title . '\', \'' . $record->role_id . '\')"
                             class="text-secondary"><span class="iconify" data-icon="bx:edit" data-width="25" data-height="25"></span></a> ';
 

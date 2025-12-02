@@ -151,5 +151,22 @@
             });
         }
 
+        function edit_code(active_id) {
+            $.get({
+                url: '{{ route('admin.students.editCode', '') }}/' + active_id,
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#loading').show();
+                },
+                success: function (data) {
+                    $('#quick-view').modal('show');
+                    $('#quick-view-modal').empty().html(data.view);
+                },
+                complete: function () {
+                    $('#loading').hide();
+                },
+            });
+        }
+
     </script>
 @stop

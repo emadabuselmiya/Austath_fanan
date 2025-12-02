@@ -41,8 +41,9 @@ class CodesController extends Controller
                 ->when($searchValue, function ($query, $searchValue) {
                     $query->where('id', 'like', '%' . $searchValue . '%')
                         ->orWhere('code', 'like', '%' . $searchValue . '%')
-                        ->whereHas('user', function ($query) use ($searchValue) {
-                            $query->orWhere('name', 'like', '%' . $searchValue . '%');
+                        ->orWhereHas('user', function ($query) use ($searchValue) {
+                            $query->where('name', 'like', '%' . $searchValue . '%')
+                                ->orWhere('email', 'like', '%' . $searchValue . '%');
                         });
                 })
                 ->count();
@@ -54,8 +55,8 @@ class CodesController extends Controller
                 ->when($searchValue, function ($query, $searchValue) {
                     $query->where('id', 'like', '%' . $searchValue . '%')
                         ->orWhere('code', 'like', '%' . $searchValue . '%')
-                        ->whereHas('user', function ($query) use ($searchValue) {
-                            $query->orWhere('name', 'like', '%' . $searchValue . '%')
+                        ->orWhereHas('user', function ($query) use ($searchValue) {
+                            $query->where('name', 'like', '%' . $searchValue . '%')
                                 ->orWhere('email', 'like', '%' . $searchValue . '%');
                         });
                 })
@@ -76,7 +77,10 @@ class CodesController extends Controller
                     "id" => $record->id,
                     "code" => $record->code,
                     "is_used" => $record->is_used ? '<span class="badge bg-label-success font-regular">مستخدم</span>' : '<span class="badge bg-label-danger font-regular">غير مستخدم</span>',
-                    "user_id" => $record->user?->name,
+                    "course" => $record->course?->course?->name,
+                    "active_at" => $record->course?->created_at->toDateString(),
+                    "expired_at" => $record->expired_at,
+                    "user_id" => $record->user?->name.' <br> '.$record->user?->email,
                     "actions" => $delete,
                 ];
             }

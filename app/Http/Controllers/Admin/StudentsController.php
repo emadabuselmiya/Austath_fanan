@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\StudentCourseActivation;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -88,5 +89,25 @@ class StudentsController extends Controller
             'success' => 1,
             'view' => view('admin.students._quick-view', compact('student'))->render(),
         ]);
+    }
+
+    public function editCode($id)
+    {
+        $active = StudentCourseActivation::findOrFail($id);
+
+        return response()->json([
+            'success' => 1,
+            'view' => view('admin.students._update-code', compact('active'))->render(),
+        ]);
+    }
+
+    public function updateCode(Request $request)
+    {
+        $active = StudentCourseActivation::findOrFail($request->active_id);
+        $active->update([
+            'course_id' => $request->course_id,
+        ]);
+
+        return response()->json([], 200);
     }
 }

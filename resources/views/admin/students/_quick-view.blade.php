@@ -21,7 +21,7 @@
                     <div class="row">
                         @foreach ($student->activeCourses as $item)
                             <div class="col-md-6 col-sm-12 mb-1">
-                                <div class="btn btn-outline-primary form-control">
+                                <div class="btn btn-outline-primary form-control" onclick="edit_code({{$item->id}})">
                                     {{ $item->course->name }} | {{ $item->code->code }}
                                     <br>
                                     @if($item->status) <span class="badge bg-label-success font-regular">مفعل</span> @else <span class="badge bg-label-danger font-regular">غير فعال</span> @endif

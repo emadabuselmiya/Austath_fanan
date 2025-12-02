@@ -12,14 +12,15 @@ use Illuminate\Support\Facades\Auth;
 
 class ActivationCodeController extends Controller
 {
-    
+
     public function activateCode(Request $request)
     {
         $request->validate([
             'code' => 'required|string|size:8',
             'user_id' => 'required|integer|exists:users,id', // Ensure user_id is an integer and exists in the users table
         ]);
-        $code = ActivationCode::where('code', strtoupper($request->input('code')))->first();
+        $code = ActivationCode::where('code', strtoupper($request->input('code')))
+            ->where('expired_at', '<=', now()->toDateString())->first();
 
         if (!$code) {
             return response()->json(['error' => 'Invalid activation code.'], 400);
@@ -30,7 +31,7 @@ class ActivationCodeController extends Controller
         }
         $user = User::find(id: $request->input('user_id'));
         if (!$user) {
-            return response()->json(['error'=> 'user not found'], 404);
+            return response()->json(['error' => 'user not found'], 404);
 
         }
         $user->verified = true;
@@ -43,7 +44,8 @@ class ActivationCodeController extends Controller
     }
 
 
-    public function activateCourse(Request $request){
+    public function activateCourse(Request $request)
+    {
         $request->validate([
             'code' => 'required|string|size:8',
             'user_id' => 'required|integer|exists:users,id', // Ensure user_id is an integer and exists in the users table
@@ -62,12 +64,12 @@ class ActivationCodeController extends Controller
 
         $user = User::find($request->input('user_id'));
         if (!$user) {
-            return response()->json(['error'=> 'User not found'], 404);
+            return response()->json(['error' => 'User not found'], 404);
         }
 
         $course = Course::find($request->input('course_id'));
         if (!$course) {
-            return response()->json(['error'=> 'Course not found'], 404);
+            return response()->json(['error' => 'Course not found'], 404);
         }
 
         StudentCourseActivation::create([
@@ -84,7 +86,8 @@ class ActivationCodeController extends Controller
         return response()->json(['message' => 'تم تفعيل المادة بنجاح'], 200);
     }
 
-    public function checkCourseActivation(Request $request){
+    public function checkCourseActivation(Request $request)
+    {
         $request->validate([
             'user_id' => 'required|integer|exists:users,id', // Ensure user_id is an integer and exists in the users table
             'course_id' => 'required|integer|exists:courses,id', // Ensure course_id is an integer and exists in the courses table
@@ -92,27 +95,26 @@ class ActivationCodeController extends Controller
 
         $user = User::find($request->input('user_id'));
         if (!$user) {
-            return response()->json(['error'=> 'User not found'], 404);
+            return response()->json(['error' => 'User not found'], 404);
         }
 
         $course = Course::find($request->input('course_id'));
         if (!$course) {
-            return response()->json(['error'=> 'Course not found'], 404);
+            return response()->json(['error' => 'Course not found'], 404);
         }
 
         $activation = StudentCourseActivation:: where('student_id', $request->input('user_id'))
-        ->where('course_id', $request->input('course_id'))
-        ->where('status', true)
-        ->first();
+            ->where('course_id', $request->input('course_id'))
+            ->where('status', true)
+            ->first();
 
-    if ($activation) {
-        return response()->json(['message' => 'Course is already activated for this user.'], 200);
-    } else {
-        return response()->json(['message' => 'لا يمكنك الدخول الى هذه المادة الرجاء الاشتراك اولا '], 400);
+        if ($activation) {
+            return response()->json(['message' => 'Course is already activated for this user.'], 200);
+        } else {
+            return response()->json(['message' => 'لا يمكنك الدخول الى هذه المادة الرجاء الاشتراك اولا '], 400);
+        }
+
     }
-
-}
-
 
 
 }

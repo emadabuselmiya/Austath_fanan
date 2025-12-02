@@ -9,5 +9,13 @@ class Sale extends Model
 {
     use HasFactory;
 
-    protected $guarded=[];
+    protected $guarded = [];
+
+    public function getImgUrlAttribute($value): string|\Illuminate\Contracts\Routing\UrlGenerator|null
+    {
+        if ($this->img != null)
+            return url('/storage/' . $this->img);
+        else
+            return url('assets/logo.png');
+    }
 }

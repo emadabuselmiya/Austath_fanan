@@ -55,6 +55,9 @@
                             <th>#</th>
                             <th>{{translate('الكود')}}</th>
                             <th>{{translate("الطالب")}}</th>
+                            <th>{{translate("المادة")}}</th>
+                            <th>{{translate("تاريخ التفعيل")}}</th>
+                            <th>{{translate("تاريخ الانتهاء")}}</th>
                             <th>{{translate("حالة الاستخدام")}}</th>
                             <th>{{translate("العمليات")}}</th>
                         </tr>
@@ -114,6 +117,9 @@
                     {data: 'id'},
                     {data: 'code'},
                     {data: 'user_id'},
+                    {data: 'course', sortable: false},
+                    {data: 'active_at', sortable: false},
+                    {data: 'expired_at'},
                     {data: 'is_used'},
                     {data: 'actions', sortable: false},
                 ],

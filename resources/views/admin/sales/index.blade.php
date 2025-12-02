@@ -1,7 +1,7 @@
 @extends('layouts.admin.app')
 
 @section('title')
-    {{ translate('المواد') }}
+    {{ translate('العروض') }}
 @stop
 
 @section('css')
@@ -19,7 +19,7 @@
 
     <!-- Content -->
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4">{{ translate('المواد') }}</h4>
+        <h4 class="fw-bold py-3 mb-4">{{ translate('العروض') }}</h4>
 
         <!-- Ajax Sourced Server-side -->
         <div class="card">
@@ -29,9 +29,7 @@
                     <tr>
                         <th>#</th>
                         <th>{{translate('الصورة')}}</th>
-                        <th>{{translate('الاسم')}}</th>
-                        <th>{{translate('النوع')}}</th>
-                        <th>{{translate("عدد المواضيع")}}</th>
+                        <th>{{translate('الوصف')}}</th>
                         <th>{{translate("العمليات")}}</th>
                     </tr>
                     </thead>
@@ -50,30 +48,13 @@
                     <h5 class="modal-title"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" id="courseForm" action="javascript:void(0);" enctype="multipart/form-data">
+                <form method="POST" id="salesForm" action="javascript:void(0);" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="course_id" id="course_id" value="-1">
+                    <input type="hidden" name="sales_id" id="sales_id" value="-1">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>{{ translate('الاسم') }}<span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" placeholder="{{ translate('الاسم') }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label>{{ translate('نوع') }}<span class="text-danger">*</span></label>
-                            <select name="class_id" id="class_id" class="select2 form-control">
-                                <option value="">{{translate('اختار النوع')}}</option>
-                                @php($classes = \App\Models\StudentClass::all())
-                                @foreach($classes as $class)
-                                    <option value="{{$class->id}}">{{$class->name}}</option>
-                                @endforeach
-                            </select>
-
-                        </div>
-                        <div class="form-group">
-                            <label>{{ translate('الفيديو') }}</label>
-                            <input type="file" name="video" id="video" class="form-control"
-                                   accept=".mp4, .mov, .avi, .webm, .flv, .mkv, video/*">
+                            <label>{{ translate('الوصف') }}<span class="text-danger">*</span></label>
+                            <input type="text" name="description" class="form-control" placeholder="{{ translate('الوصف') }}">
                         </div>
 
                         <div class="form-group mt-2" id="dropZone">
@@ -108,7 +89,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ translate('حذف') }} {{ translate('المادة') }}</h5>
+                    <h5 class="modal-title">{{ translate('حذف') }} {{ translate('العرض') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST" enctype="multipart/form-data">
@@ -140,14 +121,12 @@
                 "processing": true,
                 "serverSide": true,
                 ajax: {
-                    url: '{{ route('admin.courses.index') }}'
+                    url: '{{ route('admin.sales.index') }}'
                 }, // JSON file to add data
                 columns: [
                     {data: 'DT_RowIndex'},
                     {data: 'image'},
-                    {data: 'name'},
-                    {data: 'type'},
-                    {data: 'subjects_count'},
+                    {data: 'description'},
                     {data: 'actions', sortable: false},
                 ],
                 order: [
@@ -194,13 +173,12 @@
 
     <script>
 
-        function editForm(id, name, class_id, image) {
+        function editForm(id, name, image) {
             var modal = $('#FormModal');
 
-            modal.find('.modal-title').text("{{translate('تعديل المادة')}}");
-            modal.find('[name=course_id]').val(id);
-            modal.find('[name=name]').val(name);
-            modal.find('[name=class_id]').val(class_id).trigger('change');
+            modal.find('.modal-title').text("{{translate('تعديل العرض')}}");
+            modal.find('[name=sales_id]').val(id);
+            modal.find('[name=description]').val(name);
             modal.find('[id=output_image]').css("background-image", "url(" + image + ")");
 
             modal.modal('show');
@@ -209,10 +187,9 @@
         function createForm() {
             var modal = $('#FormModal');
 
-            modal.find('.modal-title').text("{{translate('اضافة المادة')}}");
-            $('#courseForm')[0].reset();
-            $('#class_id').val(null).trigger('change');
-            $('#course_id').val(-1);
+            modal.find('.modal-title').text("{{translate('اضافة العرض')}}");
+            $('#salesForm')[0].reset();
+            $('#sales_id').val(-1);
             modal.modal('show');
         }
 
@@ -225,7 +202,7 @@
     </script>
 
     <script>
-        $('#courseForm').on('submit', function (e) {
+        $('#salesForm').on('submit', function (e) {
             $(":submit").prop('disabled', true)
 
             e.preventDefault();
@@ -236,7 +213,7 @@
                 }
             });
             $.post({
-                url: '{{route('admin.courses.store')}}',
+                url: '{{route('admin.sales.store')}}',
                 data: formData,
                 cache: false,
                 contentType: false,
@@ -256,11 +233,11 @@
                             });
                         }
                     } else {
-                        toastr.success('{{ translate('تم اضافة المادة بنجاح') }}', {
+                        toastr.success('{{ translate('تم اضافة العرض بنجاح') }}', {
                             CloseButton: true,
                             ProgressBar: true
                         });
-                        $('#courseForm')[0].reset();
+                        $('#salesForm')[0].reset();
                         $('#FormModal').modal('hide');
                         dtTickerTable.DataTable().ajax.reload();
                     }
@@ -300,4 +277,5 @@
             image.style.backgroundImage = "url('" + URL.createObjectURL(event.target.files[0]) + "')";
         }
     </script>
+
 @stop
