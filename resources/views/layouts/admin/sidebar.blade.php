@@ -68,6 +68,13 @@
                     <i class="menu-icon tf-icons ti ti-auth-2fa"></i>
                     <div data-i18n="{{ translate('الدروس') }}">{{ translate('الدروس') }}</div>
                 </a>
+
+
+            <li class="menu-item @if(\Request::routeIs('admin.sales.*')) active @endif">
+                <a href="{{ route('admin.sales.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-auth-2fa"></i>
+                    <div data-i18n="{{ translate('العروض') }}">{{ translate('العروض') }}</div>
+                </a>
             </li>
 
 {{--            <!-- settings -->--}}

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ClassesController;
 use App\Http\Controllers\Admin\CodesController;
 use App\Http\Controllers\Admin\CoursesController;
 use App\Http\Controllers\Admin\LessonsController;
+use App\Http\Controllers\Admin\SalesController;
 use App\Http\Controllers\Admin\StudentsController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -40,6 +41,8 @@ Route::middleware(['admin.auth:admin'])->group(function () {
 
     Route::prefix('students')->as('students.')->group(function () {
         Route::get('/', [StudentsController::class, 'index'])->name('index');
+        Route::get('/editCode/{id}', [StudentsController::class, 'editCode'])->name('editCode');
+        Route::post('/updateCode', [StudentsController::class, 'updateCode'])->name('updateCode');
         Route::get('/{id}', [StudentsController::class, 'show'])->name('show');
     });
 
@@ -57,6 +60,13 @@ Route::middleware(['admin.auth:admin'])->group(function () {
     });
 
     Route::prefix('courses')->as('courses.')->controller(CoursesController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/create', 'store')->name('store');
+        Route::get('/{id}', 'show')->name('show');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
+    Route::prefix('sales')->as('sales.')->controller(SalesController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/create', 'store')->name('store');
         Route::get('/{id}', 'show')->name('show');
