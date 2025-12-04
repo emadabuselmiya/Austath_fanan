@@ -213,7 +213,7 @@ class AuthController extends Controller
 
     public function update_fcm_token(Request $request)
     {
-        User::where('id', auth()->user()->id)->update([
+        User::where('id', auth()->id())->update([
             'fcm_token' => $request['fcm_token']
         ]);
 
