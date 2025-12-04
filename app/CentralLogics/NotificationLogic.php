@@ -8,34 +8,7 @@ use Throwable;
 
 class NotificationLogic
 {
-    public static function send_push_notif_to_multi_topic($data, $topics, $type): bool|string|null
-    {
-        $condition = implode(' || ', array_map(function ($t) {
-            return "'$t' in topics";
-        }, $topics));
-
-        $postData = [
-            'message' => [
-                'condition' => $condition,
-                'data' => [
-                    'title' => (string)$data['title'],
-                    'body' => (string)$data['description'],
-                    'image' => $data['image_url'],
-                    'type' => $type,
-                    'is_read' => '0'
-                ],
-                'notification' => [
-                    'title' => (string)$data['title'],
-                    'body' => (string)$data['description'],
-                    'image' => (string)$data['image_url'],
-                ]
-            ]
-        ];
-
-        return self::sendNotificationToHttp($postData);
-    }
-
-    public static function send_push_notif_to_topic($data, $topic, $type): bool|string|null
+    public static function send_push_notif_to_topic($data, $topic): bool|string|null
     {
         $postData = [
             'message' => [
@@ -43,9 +16,8 @@ class NotificationLogic
                 'data' => [
                     'title' => (string)$data['title'],
                     'body' => (string)$data['description'],
-                    'image' => $data['image_url'],
-                    'type' => $type,
-                    'is_read' => '0'
+                    'image' => (string)$data['image_url'],
+                    'url' => (string)$data['url'],
                 ],
                 'notification' => [
                     'title' => (string)$data['title'],
@@ -60,13 +32,6 @@ class NotificationLogic
 
     public static function send_push_notif_to_device($fcm_token, $data): bool|string|null
     {
-
-        if (isset($data['type'])) {
-            $type = $data['type'];
-        } else {
-            $type = '';
-        }
-
         if (!$fcm_token) {
             return false;
         }
@@ -75,11 +40,10 @@ class NotificationLogic
             "message" => [
                 "token" => $fcm_token,
                 "data" => [
-                    "title" => (string)$data['title'],
-                    "body" => (string)$data['description'],
-                    "image" => (string)$data['image'],
-                    "type" => (string)$type,
-                    "is_read" => "0"
+                    'title' => (string)$data['title'],
+                    'body' => (string)$data['description'],
+                    'image' => (string)$data['image_url'],
+                    'url' => (string)$data['url'],
                 ],
                 "notification" => [
                     "title" => (string)$data['title'],
