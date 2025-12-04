@@ -30,13 +30,10 @@ class ConfigServiceProvider extends ServiceProvider
             $firebase = json_decode(file_get_contents(base_path('config/firebase.json')), true);
 
             if (!$firebase) {
-                throw new \Exception("Failed to parse firebase.json");
+                Config::set('firebase', $firebase);
             }
 
-            Config::set('firebase', $firebase);
-
         } catch (\Exception $e) {
-            info($e);
         }
     }
 }

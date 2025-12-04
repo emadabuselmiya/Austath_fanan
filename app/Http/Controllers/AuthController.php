@@ -59,7 +59,6 @@ class AuthController extends Controller
 
     public function signUp(Request $request)
     {
-        \Log::info($request->uuid);
 
         $user = User::where("email", $request->email)->first();
         if ($user) {
@@ -176,7 +175,6 @@ class AuthController extends Controller
 
         // Attempt to authenticate the user
         if (Auth::attempt($credentials, $remember)) {
-            \Log::info(Auth::user());
             $request->session()->regenerate();
             // Redirect to intended page or dashboard
             return redirect()->intended('/admin/video/protal')->with('success', 'Welcome back!');

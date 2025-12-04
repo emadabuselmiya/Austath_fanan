@@ -30,7 +30,6 @@ if (!function_exists('translate')) {
                 $result = trans('messages.' . $key, $replace);
             }
         } catch (\Exception $exception) {
-            info($exception);
             $result = trans('messages.' . $key, $replace);
         }
         return $result;
