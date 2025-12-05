@@ -38,4 +38,9 @@ class Lesson extends Model
     {
         return $this->belongsTo(Subject::class);
     }
+
+    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Course::class);
+    }
 }

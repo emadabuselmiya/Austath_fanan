@@ -76,8 +76,6 @@ class NotificationController extends Controller
             return response()->json(['errors' => Helpers::error_processor($validator)]);
         }
 
-
-
         $notification = new PushNotification();
         $notification->title = $request->title;
         $notification->description = $request->description;

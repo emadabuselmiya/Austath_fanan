@@ -29,7 +29,7 @@ class ConfigServiceProvider extends ServiceProvider
         try {
             $firebase = json_decode(file_get_contents(base_path('config/firebase.json')), true);
 
-            if (!$firebase) {
+            if ($firebase) {
                 Config::set('firebase', $firebase);
             }
 
