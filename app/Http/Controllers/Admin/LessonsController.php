@@ -34,12 +34,16 @@ class LessonsController extends Controller
             $searchValue = $search_arr['value']; // Search value
 
             $subject_id = $request->subject ?? null;
+            $course_id = $request->course ?? null;
 
             // Total records
             $totalRecords = Lesson::select('count(*) as allcount')->count();
             $totalRecordswithFilter = Lesson::select('count(*) as allcount')
                 ->when($subject_id, function ($query) use ($subject_id) {
                     $query->where('subject_id', '=', $subject_id);
+                })
+                ->when($course_id, function ($query) use ($course_id) {
+                    $query->where('course_id', '=', $course_id);
                 })
                 ->when($searchValue, function ($query, $searchValue) {
                     $query->where('id', 'like', '%' . $searchValue . '%')
@@ -51,6 +55,9 @@ class LessonsController extends Controller
             $records = Lesson::orderBy($columnName, $columnSortOrder)
                 ->when($subject_id, function ($query) use ($subject_id) {
                     $query->where('subject_id', '=', $subject_id);
+                })
+                ->when($course_id, function ($query) use ($course_id) {
+                    $query->where('course_id', '=', $course_id);
                 })
                 ->when($searchValue, function ($query, $searchValue) {
                     $query->where('id', 'like', '%' . $searchValue . '%')
@@ -95,6 +102,7 @@ class LessonsController extends Controller
                     "name" => $name,
                     "description" => $record->description,
                     "subject_id" => $record->subject?->name,
+                    "course_id" => $record->course?->name,
                     "created_at" => $record->created_at->toDateTimeString(),
                     "actions" => $edit . $copy . $delete,
                 ];
@@ -199,6 +207,7 @@ class LessonsController extends Controller
             'name' => ['required', 'string', 'max:255', 'min:3'],
             'description' => ['required', 'string', 'max:255', 'min:3'],
             'subject_id' => ['required', 'exists:subjects,id'],
+            'course_id' => ['required', 'exists:subjects,id'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'video' => ['nullable', 'file', 'mimes:mp4,mkv,avi,mov', 'max:524288'],
         ]);
@@ -213,6 +222,7 @@ class LessonsController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'subject_id' => $request->subject_id,
+            'course_id' => $request->course_id,
         ];
 
 
@@ -266,6 +276,7 @@ class LessonsController extends Controller
             'name' => ['required', 'string', 'max:255', 'min:3'],
             'description' => ['required', 'string', 'max:255', 'min:3'],
             'subject_id' => ['required', 'exists:subjects,id'],
+            'course_id' => ['required', 'exists:courses,id'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'video' => ['nullable', 'file', 'mimes:mp4,mkv,avi,mov', 'max:524288'],
         ]);
@@ -279,6 +290,7 @@ class LessonsController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'subject_id' => $request->subject_id,
+            'course_id' => $request->course_id,
         ];
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {

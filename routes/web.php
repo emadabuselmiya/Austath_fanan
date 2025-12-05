@@ -1,5 +1,6 @@
 <?php
 
+use App\CentralLogics\NotificationLogic;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\GeneralDataController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,7 +38,6 @@ Route::get('/', function () {
 Route::get('/about', function () {
     return view('about');
 });
-
 
 
 Route::get('/contact', function () {
@@ -117,23 +118,35 @@ Route::get("/video/portal/admin/form", [AuthController::class, "loadLoginPortal"
 Route::get("/admin/video/protal", [AuthController::class, "loadPortal"]);
 
 // In routes/web.php
-Route::get('/download/video/{lesson}', function($lessonId) {
-    try{
+Route::get('/download/video/{lesson}', function ($lessonId) {
+    try {
         $lesson = \App\Models\Lesson::findOrFail($lessonId);
 
-    // Since videos are in storage/app/public/videos
-    $videoPath =  $lesson->video;
+        // Since videos are in storage/app/public/videos
+        $videoPath = $lesson->video;
 
-    if (!$lesson->video || !Storage::disk('public')->exists($videoPath)) {
-        abort(404, 'Video not found');
-    }
+        if (!$lesson->video || !Storage::disk('public')->exists($videoPath)) {
+            abort(404, 'Video not found');
+        }
 
-    return Storage::disk('public')->download($videoPath, $lesson->name . '.mp4');
-    }catch(\Exception $ex){
+        return Storage::disk('public')->download($videoPath, $lesson->name . '.mp4');
+    } catch (\Exception $ex) {
         \Log::error($ex);
-        return  response()->json(["error" =>$ex], 500);
+        return response()->json(["error" => $ex], 500);
 
     }
 
 })->name('download.video');
 
+
+Route::get('/test', function () {
+    $data = [
+        'title' => 'test',
+        'description' => 'test',
+        'image_url' => '',
+        'url' => 'https://austathfanan.com',
+    ];
+    $fcm = "diAVmCiUQqK7y_0bVC2LiJ:APA91bGKuX6rfUIIN-0F52TkviiIyXQI7leX6Be8ZmN7e-sFrFzS_Jtw1_sBEt0NsK_RyY7ceN1Ov9-PGkR10N9E52GgAdCFlAmXWKB_5JcsjyDp09lyOKI";
+    NotificationLogic::send_push_notif_to_device($fcm, $data);
+//    NotificationLogic::send_push_notif_to_topic($data, 'all_student');
+});

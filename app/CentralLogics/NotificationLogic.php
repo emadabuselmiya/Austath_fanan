@@ -48,7 +48,7 @@ class NotificationLogic
                 "notification" => [
                     "title" => (string)$data['title'],
                     "body" => (string)$data['description'],
-                    "image" => (string)$data['image'],
+                    "image" => (string)$data['image_url'],
                 ]
             ]
         ];

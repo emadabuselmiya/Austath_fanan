@@ -76,6 +76,7 @@ Route::middleware(['admin.auth:admin'])->group(function () {
     Route::prefix('subjects')->as('subjects.')->controller(SubjectController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/create', 'store')->name('store');
+        Route::get('get_subjects', 'get_subjects')->name('get_subjects');
         Route::get('/{id}', 'show')->name('show');
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
