@@ -44,6 +44,7 @@ Route::middleware(['admin.auth:admin'])->group(function () {
         Route::get('/', [StudentsController::class, 'index'])->name('index');
         Route::get('/editCode/{id}', [StudentsController::class, 'editCode'])->name('editCode');
         Route::post('/updateCode', [StudentsController::class, 'updateCode'])->name('updateCode');
+        Route::get('toggle-settings-status/{user}/{status}/{menu}', [StudentsController::class, 'toggle_settings_status'])->name('toggle-settings');
         Route::get('/{id}', [StudentsController::class, 'show'])->name('show');
     });
 

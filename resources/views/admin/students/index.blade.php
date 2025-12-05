@@ -168,5 +168,18 @@
             });
         }
 
+        function updateClass(user_id, class_id) {
+            $.get({
+                url: '{{ route('admin.students.toggle-settings', ['', '', '']) }}/' + user_id + '/' + class_id + '/class_id',
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                },
+                success: function (data) {
+                }
+            });
+        }
+
     </script>
 @stop

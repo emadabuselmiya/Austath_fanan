@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\StudentClass;
 use App\Models\StudentCourseActivation;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -57,11 +61,20 @@ class StudentsController extends Controller
                 $show = '<a class="text-success" href="javascript:void(0);" onclick="quick_view(' . $record->id . ')">
                            <span class="iconify" data-icon="ic:baseline-remove-red-eye" data-width="20" data-height="20"></span></a>';
 
+                $classes = StudentClass::get();
+                $class_id = '<select name="class_id" id="class_id" class="form-control select2" onchange="updateClass(' . $record->id . ',this.value)">';
+                $class_id .= '<option value="" ></option>';
+                foreach ($classes as $class) {
+                    $class_id .= '<option value="' . $class->id . '" ' . ($record->class_id == $class->id ? 'selected' : '') . '>' . $class->name . '</option>';
+
+                }
+                $class_id .= '</select>';
+
                 $data_arr[] = [
                     "id" => $record->id,
                     "name" => $record->name,
                     "email" => $record->email,
-                    "class_id" => $record->class?->name,
+                    "class_id" => $class_id,
                     "activeCourses" => $record->activeCourses()->count(),
                     "actions" => $show,
                 ];
@@ -109,5 +122,15 @@ class StudentsController extends Controller
         ]);
 
         return response()->json([], 200);
+    }
+
+    public function toggle_settings_status(User $user, Request $request)
+    {
+
+        $user[$request->menu] = $request->status;
+
+        $user->save();
+
+        return redirect()->back()->with('success', translate('تم تعديل الحالة بنجاح'));
     }
 }
