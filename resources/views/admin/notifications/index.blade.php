@@ -6,21 +6,13 @@
 
 @section('css')
 
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/libs/fullcalendar/fullcalendar.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/libs/flatpickr/flatpickr.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/libs/quill/editor.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/libs/@form-validation/umd/styles/index.min.css') }}"/>
-
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/css/pages/app-calendar.css') }}"/>
-
     <!-- BEGIN: Vendor CSS-->
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/libs/node-waves/node-waves.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/libs/typeahead-js/typeahead.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/typeahead-js/typeahead.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}"/>
     <link rel="stylesheet"
-          href="{{ asset('dashboard/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('dashboard/vendor/libs/select2/select2.css') }}"/>
+          href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css') }}"/>
     <!-- END: Vendor CSS-->
 @stop
 
@@ -40,7 +32,6 @@
                         <th>{{translate('المحتوى')}}</th>
                         <th>{{translate('الصورة')}}</th>
                         <th>{{translate('التاريخ')}}</th>
-                        <th>{{translate('العمليات')}}</th>
                     </tr>
                     </thead>
                 </table>
@@ -51,53 +42,14 @@
     </div>
     <!-- / Content -->
 
-
-    <div id="deleteModal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ translate('حذف') }} {{ translate('الاشعار') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('DELETE')
-                    <div class="modal-body">
-                        {{ translate('هل انت متاكد من عملية الحذف؟') }}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" type="reset" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">{{ translate('اغلاق') }}</button>
-                        <button type="submit" class="btn btn-danger mr-1 data-submit">{{ translate('حذف') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
 @endsection
 
 @section('js')
     <!-- BEGIN: Page Vendor JS-->
-    <script src="{{ asset('dashboard/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
-    <script src="{{ asset('dashboard/vendor/libs/fullcalendar/fullcalendar.js') }}"></script>
-    <script src="{{ asset('dashboard/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
-    <script src="{{ asset('dashboard/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
-    <script src="{{ asset('dashboard/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
-    <script src="{{ asset('dashboard/vendor/libs/flatpickr/flatpickr.js') }}"></script>
-    <script src="{{ asset('dashboard/vendor/libs/moment/moment.js') }}"></script>
-
-    <!-- END: Page Vendor JS-->
-    <script src="{{ asset('dashboard/vendor/libs/select2/select2.js') }}"></script>
-    <script src="{{ asset('app-assets/js/scripts/forms/form-select2.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
 
 
     <script>
-        const status = {
-            1: {title: '{{translate('فعال')}}', class: 'bg-label-success'},
-            0: {title: '{{translate('غير فعال')}}', class: 'bg-label-danger'}
-        };
-
         var dtTickerTable = $('.list-table');
         if (dtTickerTable.length) {
             dtTickerTable.DataTable({

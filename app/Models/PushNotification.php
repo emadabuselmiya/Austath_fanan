@@ -11,25 +11,25 @@ class PushNotification extends Model
 
     protected $guarded = [];
 
-    protected $casts= [
+    protected $casts = [
         'target' => 'json'
     ];
 
-    public function getDataAttribute()
+    public function getDataAttribute(): array
     {
         return [
-            "title"=> $this->title,
-            "description"=> $this->description,
-            "image"=> $this->image,
-            "type"=> "order_status"
+            "title" => $this->title,
+            "description" => $this->description,
+            "image" => $this->image,
+            "url" => $this->url
         ];
     }
 
-    public function getImageUrlAttribute($value)
+    public function getImageUrlAttribute($value): string|\Illuminate\Contracts\Routing\UrlGenerator|\Illuminate\Contracts\Foundation\Application|null
     {
-        if ($this->image == null)
-            return null;
-        else
-            return url('/') . asset('storage/' . $this->image);
+        if ($this->image != null)
+            return url('storage/' . $this->image);
+
+        return null;
     }
 }

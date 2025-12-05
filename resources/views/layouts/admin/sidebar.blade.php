@@ -68,7 +68,7 @@
                     <i class="menu-icon tf-icons ti ti-auth-2fa"></i>
                     <div data-i18n="{{ translate('الدروس') }}">{{ translate('الدروس') }}</div>
                 </a>
-
+            </li>
 
             <li class="menu-item @if(\Request::routeIs('admin.sales.*')) active @endif">
                 <a href="{{ route('admin.sales.index') }}" class="menu-link">
@@ -77,13 +77,20 @@
                 </a>
             </li>
 
-{{--            <!-- settings -->--}}
-{{--            <li class="menu-item @if(\Request::routeIs('admin.business-setting.views')) active @endif">--}}
-{{--                <a href="{{ route('admin.business-setting.views') }}" class="menu-link">--}}
-{{--                    <i class="menu-icon tf-icons ti ti-adjustments-alt"></i>--}}
-{{--                    <div data-i18n="{{ translate('Settings') }}">{{ translate('Settings') }}</div>--}}
-{{--                </a>--}}
-{{--            </li>--}}
+            <li class="menu-item @if(\Request::routeIs('admin.notifications.*')) active @endif">
+                <a href="{{ route('admin.notifications.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-auth-2fa"></i>
+                    <div data-i18n="{{ translate('الاشعارات') }}">{{ translate('الاشعارات') }}</div>
+                </a>
+            </li>
+
+            {{--            <!-- settings -->--}}
+            {{--            <li class="menu-item @if(\Request::routeIs('admin.business-setting.views')) active @endif">--}}
+            {{--                <a href="{{ route('admin.business-setting.views') }}" class="menu-link">--}}
+            {{--                    <i class="menu-icon tf-icons ti ti-adjustments-alt"></i>--}}
+            {{--                    <div data-i18n="{{ translate('Settings') }}">{{ translate('Settings') }}</div>--}}
+            {{--                </a>--}}
+            {{--            </li>--}}
 
         </ul>
     </div>

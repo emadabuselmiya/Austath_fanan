@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\CentralLogics\Helpers;
 use App\Helpers\MainHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
@@ -102,7 +103,7 @@ class LessonsController extends Controller
                     "name" => $name,
                     "description" => $record->description,
                     "subject_id" => $record->subject?->name,
-                    "course_id" => $record->course?->name,
+                    "course_id" => $record->course ? $record->course?->name : $record->subject->course->name,
                     "created_at" => $record->created_at->toDateTimeString(),
                     "actions" => $edit . $copy . $delete,
                 ];
@@ -136,6 +137,7 @@ class LessonsController extends Controller
             'name' => ['required', 'string', 'max:255', 'min:3'],
             'description' => ['required', 'string', 'max:255', 'min:3'],
             'subject_id' => ['required', 'exists:subjects,id'],
+            'course_id' => ['required', 'exists:courses,id'],
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'video' => ['required', 'file', 'mimes:mp4,mkv,avi,mov', 'max:524288'],
         ]);
@@ -148,35 +150,8 @@ class LessonsController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'subject_id' => $request->subject_id,
+            'course_id' => $request->course_id,
         ];
-
-        if ($request->hasFile('copy_id')) {
-            $copy = Lesson::findOrFail($request->copy_id);
-
-            // التعامل مع الصورة
-            $imageOld = $copy->img;  // يجب أن يكون المسار relatif بالنسبة إلى Laravel
-            $imageInfo = pathinfo($imageOld);
-            $imageNew = 'uploads/lessons/' . uniqid() . '.' . $imageInfo['extension'];
-
-            // تأكد من وجود الملف في التخزين المحلي
-            if (Storage::exists($imageOld)) {
-                // نسخ الصورة إلى المجلد الجديد
-                Storage::copy($imageOld, $imageNew);
-                $data['img'] = $imageNew;  // تخزين المسار الجديد
-            }
-
-            // التعامل مع الفيديو
-            $videoOld = $copy->video;
-            $videoInfo = pathinfo($videoOld);
-            $videoNew = 'videos/' . uniqid() . '.' . $videoInfo['extension'];
-
-            // تأكد من وجود الفيديو في التخزين المحلي
-            if (Storage::exists($videoOld)) {
-                // نسخ الفيديو إلى المجلد الجديد
-                Storage::copy($videoOld, $videoNew);
-                $data['video'] = $videoNew;  // تخزين المسار الجديد
-            }
-        }
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $data['img'] = $request->file('image')->store('uploads/lessons', 'public');
@@ -187,6 +162,8 @@ class LessonsController extends Controller
         }
 
         Lesson::create($data);
+
+        Helpers::sendNotificationByCourse($data['course_id']);
 
         return response()->json([], 200);
     }
@@ -207,7 +184,7 @@ class LessonsController extends Controller
             'name' => ['required', 'string', 'max:255', 'min:3'],
             'description' => ['required', 'string', 'max:255', 'min:3'],
             'subject_id' => ['required', 'exists:subjects,id'],
-            'course_id' => ['required', 'exists:subjects,id'],
+            'course_id' => ['required', 'exists:courses,id'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'video' => ['nullable', 'file', 'mimes:mp4,mkv,avi,mov', 'max:524288'],
         ]);
@@ -257,6 +234,7 @@ class LessonsController extends Controller
         }
 
         Lesson::create($data);
+        Helpers::sendNotificationByCourse($data['course_id']);
 
         return response()->json([], 200);
     }

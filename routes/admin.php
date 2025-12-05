@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ClassesController;
 use App\Http\Controllers\Admin\CodesController;
 use App\Http\Controllers\Admin\CoursesController;
 use App\Http\Controllers\Admin\LessonsController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SalesController;
 use App\Http\Controllers\Admin\StudentsController;
 use App\Http\Controllers\Admin\HomeController;
@@ -91,6 +92,12 @@ Route::middleware(['admin.auth:admin'])->group(function () {
         Route::post('/{id}/edit', 'update')->name('update');
         Route::get('/{id}', 'show')->name('show');
         Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
+    Route::prefix('notifications')->as('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::get('/create', [NotificationController::class, 'create'])->name('create');
+        Route::post('/', [NotificationController::class, 'store'])->name('store');
     });
 
     Route::prefix('business-setting')->as('business-setting.')->group(function () {

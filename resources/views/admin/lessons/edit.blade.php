@@ -31,7 +31,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">{{ translate('الاسم') }}<span
                                                 class="text-danger">*</span></label>
@@ -39,17 +39,31 @@
                                                class="form-control" placeholder="{{ translate('اسم') }}" required>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                @php($course_id = $lesson->course_id ?? $lesson->subject->course_id)
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">{{ translate('المادة') }}<span
+                                                class="text-danger">*</span></label>
+                                        <select name="course_id" id="course_id" onchange="setSubjects(this.value)"
+                                                class="form-control select2">
+                                            <option value="">{{ translate('اختار المادة') }}</option>
+                                            @php($courses = \App\Models\Course::get())
+                                            @foreach($courses as $course)
+                                                <option value="{{ $course->id }}" {{ $course_id == $course->id ? 'selected' : '' }}>{{ $course->name }}</option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">{{ translate('الموضوع') }}<span
                                                 class="text-danger">*</span></label>
                                         <select name="subject_id" id="subject_id"
                                                 class="form-control select2">
                                             <option value="">{{ translate('اختار الموضوع') }}</option>
-                                            @php($subjects = \App\Models\Subject::get())
-                                            @foreach($subjects as $subject)
-                                                <option value="{{ $subject->id }}" {{ $lesson->subject_id == $subject->id ? 'selected' : '' }}>{{ $subject->name }}</option>
-                                            @endforeach
+                                            <option value="{{ $lesson->subject_id }}" selected>{{ $lesson->subject?->name }}</option>
+
                                         </select>
                                     </div>
                                 </div>
@@ -215,6 +229,30 @@
                 viewer.src = url;  // تغيير مصدر الفيديو
             }
         });
+
+        function setSubjects(course) {
+            $.ajax({
+                url: '{{route('admin.subjects.get_subjects')}}?course=' + course,
+                method: 'GET',
+                success: function (data) {
+                    // Remove existing options
+                    $('#subject_id').empty();
+
+                    // Append other stores
+                    data.forEach(function (subject) {
+                        $('#subject_id').append($('<option>', {
+                            value: subject.id,
+                            text: subject.text
+                        }));
+                    });
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                }
+            });
+            $('#subject_id').prop("disabled", false);
+        }
+        setSubjects({{$course_id}})
     </script>
 
     <script>

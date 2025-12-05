@@ -45,7 +45,6 @@ class NotificationController extends Controller
                 ->editColumn('image', function (PushNotification $notification) {
                     if ($notification->image) {
                         return '<img src="' . $notification->image_url . '" alt="' . $notification->title . '" height="50" width="50">';
-
                     } else {
                         return '';
                     }

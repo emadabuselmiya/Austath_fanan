@@ -3,16 +3,36 @@
 namespace App\CentralLogics;
 
 use App\Models\BusinessSetting;
+use App\Models\Course;
+use App\Models\StudentCourseActivation;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Spatie\ImageOptimizer\OptimizerChain;
-use Spatie\ImageOptimizer\Optimizers\Jpegoptim;
-use Spatie\ImageOptimizer\Optimizers\Optipng;
-use Spatie\ImageOptimizer\Optimizers\Pngquant;
 
 class Helpers
 {
+    public static function sendNotificationByCourse($course_id): bool
+    {
+        $course = Course::find($course_id);
+        $data = [
+            'title' => $course->name,
+            'description' => "تم تنزيل محاضرة جديدة",
+            'image_url' => '',
+            'url' => '',
+        ];
+
+        $studentCourseActivation = StudentCourseActivation::where('course_id', $course_id)->get()->pluck('student_id')->toArray();
+        $student_ids = array_unique($studentCourseActivation);
+
+        foreach ($student_ids as $item) {
+            $student = User::find($item);
+            NotificationLogic::send_push_notif_to_device($student->fcm_token, $data);
+        }
+
+        return true;
+    }
+
     public static function generateRandom($length = 6): string
     {
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -25,41 +45,6 @@ class Helpers
         return $randomString;
     }
 
-    public static function saveLogDatabase(Model $data, $model, string $type, $id = null, bool $useDirty = false): void
-    {
-        // Choose source for "after" values
-        $changedAll = $useDirty ? $data->getDirty() : $data->getChanges();
-
-        // Optional: ignore noisy fields
-        $ignore = ['created_at', 'updated_at', 'deleted_at', 'remember_token', 'password', 'email_verified_at'];
-        $changed = Arr::except($changedAll, $ignore);
-
-        if (empty($changed) && !in_array($type, ['delete', 'create'])) {
-            return; // nothing meaningful changed
-        }
-
-        // Build per-field diff
-        $diff = [];
-        foreach ($changed as $key => $after) {
-            $before = $data->getOriginal($key);
-            $diff[$key] = [
-                'before' => self::normalize($before),
-                'after' => self::normalize($after),
-            ];
-        }
-
-        if (in_array($type, ['delete', 'create'])) {
-            $diff = $data;
-        }
-
-        DatabaseLog::create([
-            'modelable_type' => is_string($model) ? $model : get_class($data),
-            'modelable_id' => $id ?? $data->getKey(),
-            'admin_id' => optional(auth('admin'))->id(),
-            'type' => $type,
-            'details' => json_encode(['changes' => $diff], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-        ]);
-    }
 
     public static function getJsonToString($value): string
     {
@@ -78,36 +63,6 @@ class Helpers
         if ($v instanceof \DateTimeInterface) return $v->format('c');
         if (is_object($v)) return method_exists($v, '__toString') ? (string)$v : json_encode($v);
         return $v;
-    }
-
-    public static function optimize_image($path, $width = 512): bool
-    {
-        $optimizerChain = (new OptimizerChain)
-            ->addOptimizer(new Jpegoptim([
-                '--strip-all',
-                '--all-progressive',
-            ]))
-            ->addOptimizer(new Pngquant([
-                '--force',
-                '--quality=65-80', // Reduce quality to avoid excessive compression
-            ]))
-            ->addOptimizer(new Optipng([
-                '-o1', // Lower compression level
-                '-quiet' // Suppresses unnecessary warnings
-            ]));
-
-        try {
-            // Load and resize the image
-            Image::load($path)
-                ->width($width)
-                ->optimize($optimizerChain)
-                ->save();
-        } catch (\Exception $e) {
-            error_log("Failed to optimize image: " . $e->getMessage()); // Log error
-            return false;
-        }
-
-        return true;
     }
 
     public static function filter_phone_number($phoneNumber): array|string

@@ -30,6 +30,7 @@
                         <th>#</th>
                         <th>{{translate('الاسم')}}</th>
                         <th>{{translate('الوصف')}}</th>
+                        <th>{{translate("المادة")}}</th>
                         <th>{{translate("الموضوع")}}</th>
                         <th>{{translate("تاريخ الانشاء")}}</th>
                         <th>{{translate("العمليات")}}</th>
@@ -85,12 +86,13 @@
                     {data: 'id'},
                     {data: 'name'},
                     {data: 'description'},
+                    {data: 'course_id'},
                     {data: 'subject_id'},
                     {data: 'created_at'},
                     {data: 'actions', sortable: false},
                 ],
                 order: [
-                    [4, 'DESC']
+                    [5, 'DESC']
                 ],
                 dom: '<"d-flex justify-content-between align-items-center header-actions mx-1 row mt-75"' +
                     '<"col-lg-12 col-xl-6" l>' +
