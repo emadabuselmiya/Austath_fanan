@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\CentralLogics\Helpers;
 use App\Helpers\MainHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\Product;
 use App\Models\StudentClass;
 use App\Models\Subject;
 use Illuminate\Http\Request;
@@ -99,4 +101,31 @@ class SubjectController extends Controller
 
         return redirect()->back()->with('success', 'تم حذف الوحدة بنجاح');
     }
+
+    public function get_subjects(Request $request)
+    {
+        $key = explode(' ', $request->q);
+        $data = Subject::when($request->course, function ($q) use ($request) {
+            $q->where('course_id', $request->course);
+            })->when($request->q, function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->q . '%');
+            });
+
+        if ($request->ispPages == 1) {
+            $data = $data->limit(100)->get();
+        } else {
+            $data = $data->get();
+        }
+
+        $filter_data = [];
+        foreach ($data as $item) {
+            $filter_data[] = [
+                'id' => $item->id,
+                'text' => $item->name ,
+            ];
+        }
+
+        return response()->json($filter_data);
+    }
+
 }
