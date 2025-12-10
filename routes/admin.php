@@ -46,6 +46,7 @@ Route::middleware(['admin.auth:admin'])->group(function () {
         Route::post('/updateCode', [StudentsController::class, 'updateCode'])->name('updateCode');
         Route::get('toggle-settings-status/{user}/{status}/{menu}', [StudentsController::class, 'toggle_settings_status'])->name('toggle-settings');
         Route::get('/{id}', [StudentsController::class, 'show'])->name('show');
+        Route::delete('/{id}', [StudentsController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('codes')->as('codes.')->group(function () {

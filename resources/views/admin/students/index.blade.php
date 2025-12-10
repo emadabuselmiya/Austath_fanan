@@ -50,6 +50,29 @@
         </div>
     </div>
 
+    <div id="deleteModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ translate('Delete') }} {{ translate('الطالب') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-body">
+                        {{ translate('Are sure of the deleting process?') }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" type="reset" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">{{ translate('Close') }}</button>
+                        <button type="submit" class="btn btn-danger mr-1 data-submit">{{ translate('Delete') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('js')
@@ -179,6 +202,13 @@
                 success: function (data) {
                 }
             });
+        }
+
+        function deleteForm(id) {
+            var modal = $('#deleteModal');
+            var action = `{{ route('admin.students.destroy', '') }}/${id}`;
+            modal.find('form').attr('action', action);
+            modal.modal('show');
         }
 
     </script>
