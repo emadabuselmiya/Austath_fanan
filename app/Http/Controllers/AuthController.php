@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Mail\EmailConfirmation;
 use App\Mail\ResetPasswordMail;
 use App\Models\Course;
+use App\Models\PushNotification;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -137,11 +140,6 @@ class AuthController extends Controller
         }
     }
 
-    public function policy()
-    {
-        return view('privacy-bolicy');
-    }
-
     public function deleteUser(Request $request)
     {
         try {
@@ -149,8 +147,8 @@ class AuthController extends Controller
             $user->verified = 2;
             $user->save();
             return response()->json("لقد تم حذف حساب المستخدم بنجاح", 200);
-        } catch (Exception $exception) {
-            \Log::error($exception->getMessage());
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
             return response()->json(["error" => $exception->getMessage()], 500);
         }
     }
@@ -191,7 +189,7 @@ class AuthController extends Controller
         try {
             return view('login');
 
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return response()->json(["error" => $ex], 500);
         }
 
@@ -218,6 +216,59 @@ class AuthController extends Controller
         ]);
 
         return response()->json(['status' => true, 'message' => 'successfully updated!'], 200);
+    }
+
+    public function get_notifications(Request $request)
+    {
+        $user = auth()->user();
+        $data = [];
+
+        $notifications = $user->notifications()
+            ->where('created_at', '>=', Carbon::today()->subDays(15))
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        foreach ($notifications as $notification) {
+            $data[] = $notification->data;
+            if ($notification && $notification->unread()) {
+                $notification->markAsRead();
+            }
+        }
+
+        $notifications = PushNotification::where(function ($q) {
+                $q->where('created_at', '>=', Carbon::today()->subDays(15))
+                    ->orWhere('updated_at', '>=', Carbon::today()->subDays(15));
+            })
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        foreach ($notifications as $notification) {
+            $data[] = $notification->data;
+        }
+
+        return response()->json([
+            'status' => true,
+            'notifications' => $data
+        ], 200);
+    }
+
+    public function delete_notification(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($request->notify_id) {
+            $notifications = $user->notifications()
+                ->where('id', '=', $request->notify_id)
+                ->delete();
+        } else {
+            $notifications = $user->notifications()
+                ->delete();
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => translate('تم حذف الاشعار بنجاح')
+        ], 200);
     }
 
 }

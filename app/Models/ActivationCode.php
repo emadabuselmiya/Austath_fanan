@@ -15,12 +15,12 @@ class ActivationCode extends Model
         "user_id"
     ];
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function course()
+    public function course(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(StudentCourseActivation::class);
     }

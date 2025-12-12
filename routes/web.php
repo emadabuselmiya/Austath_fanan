@@ -2,6 +2,7 @@
 
 use App\CentralLogics\NotificationLogic;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\SubjectController;
@@ -30,7 +31,7 @@ use Illuminate\Http\Request;
 
 Route::post('/signup', [AuthController::class, 'signUp']);
 Route::post('/signin', [AuthController::class, 'signIn']);
-Route::get("/privacy-policy", [AuthController::class, 'policy']);
+
 Route::get('/', function () {
     return view('home');
 });
@@ -39,10 +40,15 @@ Route::get('/about', function () {
     return view('about');
 });
 
-
 Route::get('/contact', function () {
     return view('contact');
 });
+
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+});
+
+
 Route::get('/get-classes', [StudentClassController::class, 'getClasses']);
 Route::post('/reset-password', [AuthController::class, 'sendResetPasswordCode']);
 Route::post('/update-password', [AuthController::class, 'updateUserPassword']);
@@ -50,9 +56,11 @@ Route::post('/email-confirmation', [AuthController::class, 'emailConfirmation'])
 Route::post('/delete-account-hfg', [AuthController::class, 'deleteUser']);
 
 Route::middleware('api.token')->group(function () {
-    Route::post('/courses', [CourseController::class, 'store']);
     Route::post('/update_fcm_token', [AuthController::class, 'update_fcm_token']);
+    Route::get('/notifications', [AuthController::class, 'get_notifications']);
+    Route::post('/delete_notification', [AuthController::class, 'delete_notification']);
 
+    Route::post('/courses', [CourseController::class, 'store']);
     Route::post('/subjects', [SubjectController::class, 'store']);
     Route::delete('/subject/{subject_id}', [SubjectController::class, 'delete']);
     Route::delete('/subjects', [SubjectController::class, 'destroy']);
@@ -131,7 +139,7 @@ Route::get('/download/video/{lesson}', function ($lessonId) {
 
         return Storage::disk('public')->download($videoPath, $lesson->name . '.mp4');
     } catch (\Exception $ex) {
-        \Log::error($ex);
+        Log::error($ex);
         return response()->json(["error" => $ex], 500);
 
     }

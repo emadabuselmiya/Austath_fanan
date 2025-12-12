@@ -8,8 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\ActivationCode;
 use App\Models\StudentCourseActivation;
 
-use Illuminate\Support\Facades\Auth;
-
 class ActivationCodeController extends Controller
 {
 

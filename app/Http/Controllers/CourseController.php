@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\StudentClass;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
@@ -25,7 +26,6 @@ class CourseController extends Controller
             $base64Image = 'data:image/jpeg;base64,' . $base64Image; // Assuming it's a JPEG
         }
 
-
         $imageName = null;
         if ($base64Image) {
             // Match the base64 string to extract the image extension
@@ -36,7 +36,7 @@ class CourseController extends Controller
                 $imageName = 'uploads/courses/' . uniqid() . '.' . $imageExtension[1];
 
                 // Store the image
-                \Storage::disk('public')->put($imageName, base64_decode($image));
+                Storage::disk('public')->put($imageName, base64_decode($image));
             } else {
                 // Return an error if the base64 string format is incorrect
                 return response()->json(['error' => 'Invalid base64 image format'], 400);
@@ -66,20 +66,20 @@ class CourseController extends Controller
     }
 
     public function getCourses(Request $request)
-{
-    $courses = Course::all()->map(function ($course) {
-        return [
-            'id' => $course->id,
-            'name' => $course->name,
-            'video' => $course->demo,
-            'img' => $course->img,
-            'class_id' => $course->class_id,
-            'type' => $course->type,
-        ];
-    });
+    {
+        $courses = Course::all()->map(function ($course) {
+            return [
+                'id' => $course->id,
+                'name' => $course->name,
+                'video' => $course->demo,
+                'img' => $course->img,
+                'class_id' => $course->class_id,
+                'type' => $course->type,
+            ];
+        });
 
-    return response()->json($courses);
-}
+        return response()->json($courses);
+    }
 
     public function destroy(Request $request)
     {
@@ -90,7 +90,6 @@ class CourseController extends Controller
 
         } catch (Exception $ex) {
             return response()->json(["error" => $ex->getMessage()]);
-
         }
     }
 
@@ -121,11 +120,11 @@ class CourseController extends Controller
                 $newImageName = 'uploads/courses/' . uniqid() . '.' . $imageExtension[1];
 
                 // Store the new image
-                \Storage::disk('public')->put($newImageName, base64_decode($image));
+                Storage::disk('public')->put($newImageName, base64_decode($image));
 
                 // Delete the old image if it exists
-                if ($imageName && \Storage::disk('public')->exists($imageName)) {
-                    \Storage::disk('public')->delete($imageName);
+                if ($imageName && Storage::disk('public')->exists($imageName)) {
+                    Storage::disk('public')->delete($imageName);
                 }
 
                 $imageName = $newImageName;
@@ -139,8 +138,8 @@ class CourseController extends Controller
         $videoName = $course->demo; // Keep the old video by default
         if ($request->hasFile('video')) {
             // Delete the old video if it exists
-            if ($course->demo && \Storage::exists('public/' . $course->demo)) {
-                \Storage::delete('public/' . $course->demo);
+            if ($course->demo && Storage::exists('public/' . $course->demo)) {
+                Storage::delete('public/' . $course->demo);
             }
 
             // Upload the new video
@@ -158,7 +157,6 @@ class CourseController extends Controller
 
         return response()->json(['message' => 'Course updated successfully', 'course' => $course], 200);
     }
-
 
     public function getCourseDemo(Request $request, $id)
     {
@@ -183,7 +181,7 @@ class CourseController extends Controller
             return response()->json(["video" => $fileUrl]);
 
         } catch (Exception $ex) {
-            \Log::error($ex);
+            Log::error($ex);
             return response()->json(["error" => $ex->getMessage()], 500);
         }
     }
@@ -213,6 +211,5 @@ class CourseController extends Controller
             return response()->json(['error' => 'An error occurred while saving the order'], 500);
         }
     }
-
 
 }

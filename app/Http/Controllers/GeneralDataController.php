@@ -7,9 +7,6 @@ use App\Models\GeneralData;
 
 class GeneralDataController extends Controller
 {
-    //
-
-
     public function getData(Request $request)
     {
         $data = GeneralData::all();

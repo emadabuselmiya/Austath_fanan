@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use App\Models\Lesson;
@@ -10,6 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+
 class LessonController extends Controller
 {
 
@@ -42,7 +42,7 @@ class LessonController extends Controller
                     $imageName = 'uploads/lessons/' . uniqid() . '.' . $imageExtension[1];
 
                     // Store the image
-                    \Storage::disk('public')->put($imageName, base64_decode($image));
+                    Storage::disk('public')->put($imageName, base64_decode($image));
                 } else {
                     // Return an error if the base64 string format is incorrect
                     return response()->json(['error' => 'Invalid base64 image format'], 400);
@@ -77,8 +77,6 @@ class LessonController extends Controller
             return response()->json(['message' => 'An error occurred while creating the lesson'], 500);
         }
     }
-
-
 
     public function getLesson($lesson_id)
     {
@@ -185,7 +183,7 @@ class LessonController extends Controller
                         $imageName = 'uploads/lessons/' . uniqid() . '.' . $imageExtension[1];
 
                         // Store the image
-                        \Storage::disk('public')->put($imageName, base64_decode($image));
+                        Storage::disk('public')->put($imageName, base64_decode($image));
                     } else {
                         // Return an error if the base64 string format is incorrect
                         return response()->json(['error' => 'Invalid base64 image format'], 400);
@@ -230,53 +228,50 @@ class LessonController extends Controller
         }
     }
 
+    public function moveLesson(Request $request)
+    {
+        // Validate request inputs
+        $request->validate([
+            'lesson_id' => 'required|exists:lessons,id',
+            'subject_id' => 'required|exists:subjects,id',
+            'operation' => 'required|in:c,v', // c = copy, v = cut
+        ]);
 
+        try {
+            // Start DB transaction
+            return DB::transaction(function () use ($request) {
+                $lesson = Lesson::findOrFail($request->lesson_id);
+                $subject = Subject::findOrFail($request->subject_id);
 
-public function moveLesson(Request $request)
-{
-    // Validate request inputs
-    $request->validate([
-        'lesson_id' => 'required|exists:lessons,id',
-        'subject_id' => 'required|exists:subjects,id',
-        'operation' => 'required|in:c,v', // c = copy, v = cut
-    ]);
+                if ($request->operation == 'c') {
+                    // Copy: create new lesson with new subject_id
+                    $newLesson = $lesson->replicate();
+                    $newLesson->subject_id = $subject->id;
+                    $newLesson->save();
 
-    try {
-        // Start DB transaction
-        return DB::transaction(function () use ($request) {
-            $lesson = Lesson::findOrFail($request->lesson_id);
-            $subject = Subject::findOrFail($request->subject_id);
+                    return response()->json([
+                        'message' => 'Lesson copied successfully.',
+                        'lesson' => $newLesson
+                    ], 201);
+                } elseif ($request->operation == 'v') {
+                    // Cut: copy then delete original
+                    $newLesson = $lesson->replicate();
+                    $newLesson->subject_id = $subject->id;
+                    $newLesson->save();
 
-            if ($request->operation == 'c') {
-                // Copy: create new lesson with new subject_id
-                $newLesson = $lesson->replicate();
-                $newLesson->subject_id = $subject->id;
-                $newLesson->save();
+                    // Delete original lesson
+                    $lesson->delete();
 
-                return response()->json([
-                    'message' => 'Lesson copied successfully.',
-                    'lesson' => $newLesson
-                ], 201);
-            }
-            elseif ($request->operation == 'v') {
-                // Cut: copy then delete original
-                $newLesson = $lesson->replicate();
-                $newLesson->subject_id = $subject->id;
-                $newLesson->save();
-
-                // Delete original lesson
-                $lesson->delete();
-
-                return response()->json([
-                    'message' => 'Lesson moved (cut) successfully.',
-                    'lesson' => $newLesson
-                ], 200);
-            }
-        });
-    } catch (\Exception $ex) {
-        \Log::error($ex);
-        return response()->json(["error" => $ex->getMessage()], 500);
+                    return response()->json([
+                        'message' => 'Lesson moved (cut) successfully.',
+                        'lesson' => $newLesson
+                    ], 200);
+                }
+            });
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            return response()->json(["error" => $ex->getMessage()], 500);
+        }
     }
-}
 
 }

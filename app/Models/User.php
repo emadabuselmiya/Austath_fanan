@@ -22,8 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         "class_id",
-	"verified",
-	"uuid",
+        "verified",
+        "uuid",
     ];
 
     /**
@@ -33,7 +33,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-
     ];
 
     /**
@@ -45,11 +44,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function class(){
+    public function class(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(StudentClass::class, 'class_id');
     }
 
-    public function activeCourses(){
+    public function activeCourses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(StudentCourseActivation::class, "student_id");
     }
 }

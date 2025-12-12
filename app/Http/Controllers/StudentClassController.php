@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\StudentClass;
 use Illuminate\Http\Request;
 
@@ -20,9 +19,8 @@ class StudentClassController extends Controller
             "name" => $request->name,
         ]);
 
-        return response()->json(['message' => 'class created succesfully.'], 200);
+        return response()->json(['message' => 'class created successfully.'], 200);
     }
-
 
     public function getCoursesForClass($class_id)
     {
@@ -79,7 +77,7 @@ class StudentClassController extends Controller
             }
 
             return response()->json(['message' => 'Courses order updated successfully'], 200);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred while saving the order'], 500);
         }
     }

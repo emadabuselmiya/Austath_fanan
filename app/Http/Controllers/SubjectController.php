@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Models\Subject;
@@ -26,7 +25,6 @@ class SubjectController extends Controller
 
         return response()->json(['message' => 'Subject created successfully', 'subject' => $subject], 200);
     }
-
 
     public function getCourseSubjects($course_id)
     {
@@ -66,7 +64,6 @@ class SubjectController extends Controller
         $subject->delete();
         return response()->json(['message' => 'subject deleted successfully.'], 200);
     }
-
 
     public function update(Request $request)
     {

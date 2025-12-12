@@ -18,7 +18,6 @@ class CommentController extends Controller
         return response()->json($comments);
 	}
 
-
 	public function store(Request $request)
     {
         $validated = $request->validate([
@@ -35,6 +34,7 @@ class CommentController extends Controller
             'comment' => $comment,
         ], 200);
 	}
+
 	public function destroy($id)
     {
         $comment = Comment::findOrFail($id);

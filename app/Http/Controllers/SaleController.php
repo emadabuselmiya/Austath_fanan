@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SaleController extends Controller
 {
-    //
-
     public function getData(Request $request)
     {
         $sales = Sale::all();
@@ -25,11 +24,7 @@ class SaleController extends Controller
             'description' => $description
         ]);
     }
-    // public function getData(Request $request)
-    // {
-    //     $sale = Sale::first();
-    //     return response()->json($sale);
-    // }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -54,7 +49,7 @@ class SaleController extends Controller
                     $image = str_replace(' ', '+', $image);
                     $imageName = 'uploads/sales/' . uniqid() . '.' . $imageExtension[1];
 
-                    \Storage::disk('public')->put($imageName, base64_decode($image));
+                    Storage::disk('public')->put($imageName, base64_decode($image));
                 } else {
                     return response()->json(['error' => 'Invalid base64 image format'], 400);
                 }
@@ -83,7 +78,7 @@ class SaleController extends Controller
         $existingSales = Sale::all();
         foreach ($existingSales as $existingSale) {
             if ($existingSale->img) {
-                \Storage::disk('public')->delete($existingSale->img);
+                Storage::disk('public')->delete($existingSale->img);
             }
         }
         Sale::truncate();
@@ -104,7 +99,7 @@ class SaleController extends Controller
                     $image = str_replace(' ', '+', $image);
                     $imageName = 'uploads/sales/' . uniqid() . '.' . $imageExtension[1];
 
-                    \Storage::disk('public')->put($imageName, base64_decode($image));
+                    Storage::disk('public')->put($imageName, base64_decode($image));
                 } else {
                     return response()->json(['error' => 'Invalid base64 image format'], 400);
                 }

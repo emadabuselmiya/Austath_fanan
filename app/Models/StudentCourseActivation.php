@@ -11,15 +11,18 @@ class StudentCourseActivation extends Model
 
     protected $guarded = [];
 
-    public function student(){
+    public function student(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(User::class, 'student_id');
     }
 
-    public function course(){
+    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(Course::class, 'course_id');
     }
 
-    public function code(){
+    public function code(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(ActivationCode::class, 'activation_code_id');
     }
 

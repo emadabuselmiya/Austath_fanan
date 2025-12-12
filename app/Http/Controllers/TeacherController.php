@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Teacher;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TeacherController extends Controller
 {
@@ -24,7 +24,6 @@ class TeacherController extends Controller
             $base64Image = 'data:image/jpeg;base64,' . $base64Image; // Assuming it's a JPEG
         }
 
-
         $imageName = null;
         if ($base64Image) {
             // Match the base64 string to extract the image extension
@@ -35,7 +34,7 @@ class TeacherController extends Controller
                 $imageName = 'uploads/teachers/' . uniqid() . '.' . $imageExtension[1];
 
                 // Store the image
-                \Storage::disk('public')->put($imageName, base64_decode($image));
+                Storage::disk('public')->put($imageName, base64_decode($image));
             } else {
                 // Return an error if the base64 string format is incorrect
                 return response()->json(['error' => 'Invalid base64 image format'], 400);

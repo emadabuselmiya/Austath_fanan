@@ -35,10 +35,4 @@ class Admin extends Authenticatable
         $this->timestamps = false;
         return $this;
     }
-
-    public function routeNotificationForTelegram(): int
-    {
-        return -801085112;
-    }
-
 }

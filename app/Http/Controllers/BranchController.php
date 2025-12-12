@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BranchController extends Controller
 {
     public function getBranches(Request $request)
     {
-
-
         return response()->json(Branch::all());
-
     }
 
     public function destroy(Request $request)
     {
-
         $branch = Branch::findOrFail($request->id);
         $branch->delete();
         return response()->json(["message" => "branch deleted successfully"], 200);
-
     }
 
     public function update(Request $request)
@@ -52,11 +47,11 @@ class BranchController extends Controller
                 $newImageName = 'uploads/branches/' . uniqid() . '.' . $imageExtension[1];
 
                 // Store the new image
-                \Storage::disk('public')->put($newImageName, base64_decode($image));
+                Storage::disk('public')->put($newImageName, base64_decode($image));
 
                 // Delete the old image if it exists
-                if ($imageName && \Storage::disk('public')->exists($imageName)) {
-                    \Storage::disk('public')->delete($imageName);
+                if ($imageName && Storage::disk('public')->exists($imageName)) {
+                    Storage::disk('public')->delete($imageName);
                 }
 
                 $imageName = $newImageName;
@@ -80,8 +75,6 @@ class BranchController extends Controller
 
     public function store(Request $request)
     {
-
-
         $request->validate([
             'name' => 'required|string|max:255',
             'mobile' => 'required|string|max:255', // Validate that class_id is an integer and exists in the student_classes table
@@ -106,7 +99,7 @@ class BranchController extends Controller
                     $imageName = 'uploads/branches/' . uniqid() . '.' . $imageExtension[1];
 
                     // Store the image
-                    \Storage::disk('public')->put($imageName, base64_decode($image));
+                    Storage::disk('public')->put($imageName, base64_decode($image));
                 } else {
                     // Return an error if the base64 string format is incorrect
                     return response()->json(['error' => 'Invalid base64 image format'], 400);

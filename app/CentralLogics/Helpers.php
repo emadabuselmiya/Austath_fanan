@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class Helpers
 {
@@ -27,6 +28,16 @@ class Helpers
 
         foreach ($student_ids as $item) {
             $student = User::find($item);
+
+            DB::table('notifications')->insert([
+                'id' => \Str::uuid(),
+                'type' => 'notify',
+                'notifiable_type' => User::class,
+                'notifiable_id' => $student->id,
+                'data' => json_encode($data),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
             NotificationLogic::send_push_notif_to_device($student->fcm_token, $data);
         }
 
