@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\StudentClass;
@@ -61,6 +62,8 @@ class StudentsController extends Controller
                 $show = '<a class="text-success" href="javascript:void(0);" onclick="quick_view(' . $record->id . ')">
                            <span class="iconify" data-icon="ic:baseline-remove-red-eye" data-width="20" data-height="20"></span></a>';
 
+                $delete = '<a class="text-danger" onclick="deleteForm(' . $record->id . ')"><span class="iconify" data-icon="fluent:delete-20-filled" data-width="25" data-height="25"></span></a>';
+
                 $classes = StudentClass::get();
                 $class_id = '<select name="class_id" id="class_id" class="form-control select2" onchange="updateClass(' . $record->id . ',this.value)">';
                 $class_id .= '<option value="" ></option>';
@@ -72,11 +75,11 @@ class StudentsController extends Controller
 
                 $data_arr[] = [
                     "id" => $record->id,
-                    "name" => $record->name,
+                    "name" => $record->name . $record->verified == 2 ? '(محذوف)' : '',
                     "email" => $record->email,
                     "class_id" => $class_id,
                     "activeCourses" => $record->activeCourses()->count(),
-                    "actions" => $show,
+                    "actions" => $show . $delete,
                 ];
             }
 
@@ -132,5 +135,13 @@ class StudentsController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', translate('تم تعديل الحالة بنجاح'));
+    }
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->update(['verified' => 2]);
+
+        return redirect()->back()->with('success', translate('تم حذف الطالب بنجاح'));
     }
 }
